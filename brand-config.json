@@ -225,7 +225,7 @@
         {
           "name": "control",
           "_name_help": "Variant label for reporting.",
-          "url": "thank-you.html",
+          "url": "https://cal.com/beyondbordersmatchmaking/amplifai",
           "_url_help": "⚡ REQUIRED if splitTest enabled — destination URL for this variant.",
           "weight": 100,
           "enabled": true
