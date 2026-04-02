@@ -84,7 +84,7 @@
       "_subheadline_help": "⚡ REQUIRED — Supporting text below headline. 60-120 characters optimal. Overridden by ?sh= URL param.",
       "cta_text": "Build My AI Funnel",
       "_cta_text_help": "⚡ REQUIRED — CTA button label. Action-oriented, 3-6 words ideal. Overridden by ?cta= URL param.",
-      "cta_destination": "https://echo-lp-dev.pages.dev/conversion-tracker.html",
+      "cta_destination": "https://typebot.co/ceos-echo-funnel-v-1-uyrq8g7",
       "_cta_destination_help": "⚡ REQUIRED — Where the CTA button sends the user. TypeBot URL, Calendly link, product page, etc.",
       "_cta_destination_example": "https://typebot.co/ceos-echo-funnel-v-1-uyrq8g7,
       "_cta_destination_routing": "Routing priority: 1) ?link= URL param always wins  2) debug=1 → conversion-tracker.html (internal tracking test)  3) This field  4) Falls back to conversion-tracker.html with console warning",
@@ -238,7 +238,7 @@
       "_type_help": "Survey provider. Options: formbricks | typebot | (leave empty for no survey)",
       "formbricks_id": "",
       "_formbricks_id_help": "FormBricks survey ID (if type = formbricks).",
-      "typebot_id": "",
+      "typebot_id": "ceos-echo-funnel-v-1-uyrq8g7",
       "_typebot_id_help": "TypeBot bot ID (if type = typebot)."
     },
     "survey_data": {
