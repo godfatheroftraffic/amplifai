@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmplifAI · Test Protocol v5</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b10;--card:#0d1117;--card2:#111620;--border:rgba(255,255,255,0.07);
+  --blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#a78bfa;
+  --text:#f1f5f9;--muted:#64748b;
+  --mono:'IBM Plex Mono',monospace;--sans:'DM Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px;padding:12px 24px;background:rgba(8,11,16,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;background:var(--cyan);color:#000;padding:3px 9px;border-radius:3px}
+.topbar-title{font-size:14px;font-weight:700}
+.version-tag{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:4px}
+.prog-wrap{margin-left:auto;display:flex;align-items:center;gap:5px}
+.prog-dot{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted);transition:all .3s;cursor:default}
+.prog-dot.pass{background:rgba(16,185,129,.15);border-color:var(--green);color:var(--green)}
+.prog-dot.fail{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
+.prog-dot.active{background:rgba(6,182,212,.15);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px rgba(6,182,212,.3)}
+#prog-label{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px}
+
+/* PAGE */
+.page{max-width:820px;margin:0 auto;padding:28px 20px 100px}
+
+/* CONFIG */
+.config-card{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.config-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--yellow);margin-bottom:12px}
+.config-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.config-label{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:130px}
+.config-input{flex:1;min-width:180px;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+.config-input:focus{border-color:rgba(245,158,11,.5)}
+.config-apply{font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 18px;background:var(--yellow);color:#000;border:none;border-radius:6px;cursor:pointer}
+.config-urls{margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.config-url-row{font-family:var(--mono);font-size:9px;color:var(--muted)}
+.config-url-row span{color:var(--cyan)}
+
+/* PREV RUNS */
+.prev-runs-card{background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.1);border-radius:10px;padding:12px 16px;margin-bottom:24px}
+.prev-runs-hdr{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.prev-runs-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--blue)}
+.prev-runs-toggle{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:auto}
+.prev-runs-body{margin-top:10px;display:none}
+.prev-runs-body.open{display:block}
+
+/* PHASE HEADER */
+.phase{display:flex;align-items:center;gap:14px;margin:36px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.phase-num{font-family:var(--mono);font-size:11px;font-weight:700;color:#000;background:var(--cyan);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.phase-title{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.phase-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:10px;margin-left:auto;display:none}
+.phase-badge.pass{background:rgba(16,185,129,.15);color:var(--green);display:inline-block}
+.phase-badge.fail{background:rgba(239,68,68,.15);color:var(--red);display:inline-block}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:10px}
+
+/* INSTRUCTIONS */
+.instr{display:flex;gap:12px;margin-bottom:11px;align-items:flex-start}
+.instr-n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cyan);min-width:20px;padding-top:1px;flex-shrink:0}
+.instr-t{font-size:13px;color:#cbd5e1;line-height:1.65}
+.instr-t strong{color:var(--text);font-weight:700}
+.instr-t code{font-family:var(--mono);font-size:11px;background:rgba(6,182,212,.12);color:var(--cyan);padding:1px 6px;border-radius:3px}
+.key{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;background:var(--card2);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:1px 7px}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:18px 0}
+.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.ck{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card2);cursor:pointer;transition:all .15s;user-select:none}
+.ck:hover{border-color:rgba(255,255,255,.15)}
+.ck.yes{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.05);cursor:default}
+.ck.no{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.05);cursor:default}
+.ck-box{width:20px;height:20px;min-width:20px;border-radius:5px;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .15s;flex-shrink:0}
+.ck.yes .ck-box{background:var(--green);border-color:var(--green);color:#fff}
+.ck.no .ck-box{background:var(--red);border-color:var(--red);color:#fff}
+.ck-label{font-size:13px;color:#94a3b8;line-height:1.5;flex:1}
+.ck.yes .ck-label{color:var(--text)}
+.ck.no .ck-label{color:#fca5a5}
+.ck-btn-group{display:flex;gap:6px;flex-shrink:0}
+.ck-yes-btn{font-family:var(--mono);font-size:9px;font-weight:700;padding:4px 10px;border-radius:4px;border:none;cursor:pointer;background:rgba(16,185,129,.2);color:var(--green);transition:all .15s}
+.ck-no-btn{font-family:var(--mono);font-size:9px;font-weight:700;padding:4px 10px;border-radius:4px;border:none;cursor:pointer;background:rgba(239,68,68,.15);color:var(--red);transition:all .15s}
+.ck-yes-btn:hover{background:rgba(16,185,129,.35)}
+.ck-no-btn:hover{background:rgba(239,68,68,.3)}
+.ck.yes .ck-btn-group,.ck.no .ck-btn-group{opacity:.4;pointer-events:none}
+
+/* BOOKMARKLET */
+.bm-card{background:rgba(6,182,212,.05);border:1px dashed rgba(6,182,212,.3);border-radius:10px;padding:16px 18px;margin:12px 0}
+.bm-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px}
+.bm-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.bm-link{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(6,182,212,.15);border:2px solid var(--cyan);border-radius:8px;color:var(--cyan);font-family:var(--mono);font-size:11px;font-weight:700;text-decoration:none;cursor:grab;white-space:nowrap;transition:all .2s}
+.bm-link:hover{background:rgba(6,182,212,.25)}
+.bm-link:active{cursor:grabbing}
+.bm-ty-link{border-color:var(--yellow);color:var(--yellow);background:rgba(245,158,11,.1)}
+.bm-ty-link:hover{background:rgba(245,158,11,.2)}
+.bm-hint{font-size:12px;color:var(--muted);line-height:1.5}
+.bm-hint strong{color:var(--text)}
+
+/* COPY BLOCK */
+.copy-wrap{position:relative;margin:8px 0}
+.copy-block{background:#060a10;border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 56px 12px 14px;font-family:var(--mono);font-size:9px;color:var(--cyan);line-height:1.7;word-break:break-all;white-space:pre-wrap;max-height:120px;overflow-y:auto}
+.copy-over-btn{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:10px;font-weight:700;background:var(--cyan);color:#000;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;transition:all .15s}
+.copy-over-btn:hover{filter:brightness(1.1)}
+.copy-over-btn.copied{background:var(--green);color:#fff}
+
+/* PASTE AREA */
+.paste-area{width:100%;min-height:90px;padding:12px;background:#060a10;border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;resize:vertical;transition:border-color .2s;margin:8px 0;line-height:1.6}
+.paste-area:focus{border-color:rgba(6,182,212,.4)}
+.parse-btn{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;padding:9px 20px;border:none;border-radius:6px;cursor:pointer;transition:all .15s}
+.parse-btn:hover{filter:brightness(1.1)}
+.parse-err{font-family:var(--mono);font-size:10px;color:var(--red);margin-left:10px}
+
+/* REPORT OUTPUT */
+.report-out{margin-top:12px}
+.rpt-summary{padding:14px;border-radius:8px;text-align:center;margin-bottom:12px}
+.rpt-status{font-size:18px;font-weight:800;margin-bottom:4px}
+.rpt-counts{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.rpt-row{display:flex;gap:8px;padding:5px 10px;border-radius:5px;margin-bottom:3px;font-family:var(--mono);font-size:10px;align-items:flex-start}
+.rpt-row.pr{background:rgba(16,185,129,.05);color:var(--green)}
+.rpt-row.fr{background:rgba(239,68,68,.05);color:var(--red)}
+.rpt-row.wr{background:rgba(245,158,11,.05);color:var(--yellow)}
+.rpt-key{min-width:200px;color:#94a3b8;flex-shrink:0}
+.rpt-det{color:var(--muted);line-height:1.5}
+.err-block{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.err-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--red);margin-bottom:8px}
+.err-line{font-family:var(--mono);font-size:10px;color:#fca5a5;padding:4px 0;border-bottom:1px solid rgba(239,68,68,.08);line-height:1.5}
+.err-line:last-child{border:none}
+
+/* GTM PARSE OUTPUT */
+.gtm-parse-out{margin-top:12px}
+.gtm-check-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;border:1px solid var(--border);background:var(--card2);margin-bottom:4px;font-family:var(--mono);font-size:10px}
+.gtm-check-row.pass-row{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04)}
+.gtm-check-row.fail-row{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.04)}
+.gtm-check-row.warn-row{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.04)}
+.gtm-icon{min-width:16px;font-size:11px}
+.gtm-check-label{flex:1;color:#94a3b8}
+.gtm-check-row.pass-row .gtm-check-label{color:var(--text)}
+.gtm-check-row.fail-row .gtm-check-label{color:#fca5a5}
+.gtm-check-row.warn-row .gtm-check-label{color:#fde68a}
+
+/* ALERT */
+.alert{border-radius:8px;padding:11px 14px;margin:10px 0;font-size:12px;line-height:1.65}
+.alert-info{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);color:#93c5fd}
+.alert-warn{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);color:#fde68a}
+.alert-error{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+.alert strong{font-weight:700}
+
+/* APS INDICATOR */
+.aps-indicator{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:8px;margin:12px 0}
+.aps-label{font-family:var(--mono);font-size:11px;color:#facc15;font-weight:700}
+.aps-arrow{font-size:18px}
+.aps-hint{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* PHASE BUTTONS */
+.phase-btns{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.phase-pass{font-family:var(--mono);font-size:11px;font-weight:700;padding:9px 20px;background:var(--green);color:#fff;border:none;border-radius:6px;cursor:pointer;transition:all .15s}
+.phase-fail{font-family:var(--mono);font-size:11px;font-weight:700;padding:9px 20px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;transition:all .15s}
+.phase-pass:hover,.phase-fail:hover{filter:brightness(1.1)}
+.phase-pass:disabled,.phase-fail:disabled{opacity:.45;cursor:not-allowed}
+
+/* FEEDBACK */
+.feedback-card{background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.12);border-radius:10px;padding:14px 16px;margin-top:14px}
+.feedback-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--yellow);margin-bottom:8px}
+.feedback-area{width:100%;min-height:60px;padding:10px 12px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--sans);font-size:12px;outline:none;resize:vertical;transition:border-color .2s;line-height:1.6}
+.feedback-area:focus{border-color:rgba(245,158,11,.3)}
+.feedback-area::placeholder{color:var(--muted);font-size:11px}
+.feedback-submit{font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 16px;background:rgba(245,158,11,.2);color:var(--yellow);border:1px solid rgba(245,158,11,.3);border-radius:5px;cursor:pointer;margin-top:8px;transition:all .15s}
+.feedback-submit:hover{background:rgba(245,158,11,.35)}
+.feedback-submit.submitted{background:rgba(255,255,255,.06);color:var(--muted);border-color:transparent;pointer-events:none}
+
+/* OPEN BTN */
+.open-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 14px;border:none;border-radius:6px;cursor:pointer;transition:all .15s;margin:4px 0}
+.open-btn:hover{filter:brightness(1.1)}
+
+/* FINAL BOX */
+.final-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;display:none}
+.final-box.visible{display:block}
+.final-title{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
+.final-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.claude-box{background:#040709;border:1px solid rgba(59,130,246,.2);border-radius:10px;padding:16px;margin:12px 0}
+.claude-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--blue);margin-bottom:10px}
+.claude-text{font-family:var(--mono);font-size:10px;color:#93c5fd;line-height:1.7;word-break:break-all;white-space:pre-wrap;max-height:200px;overflow-y:auto}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:700;padding:9px 20px;border:none;border-radius:6px;cursor:pointer;transition:all .15s;margin-top:8px}
+.copy-btn:hover{filter:brightness(1.1)}
+.copy-btn.copied{background:var(--green)!important;color:#fff!important}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">AMPLIFAI</div>
+  <div class="topbar-title">Echo LP · Test Protocol <span class="version-tag">v5</span></div>
+  <div class="prog-wrap">
+    <div class="prog-dot" id="pd0" title="Phase 0: Setup">0</div>
+    <div class="prog-dot" id="pd1" title="Phase 1: Landing Page">1</div>
+    <div class="prog-dot" id="pd2" title="Phase 2: GTM Tags">2</div>
+    <div class="prog-dot" id="pd3" title="Phase 3: Thank You">3</div>
+    <span id="prog-label">0 / 4</span>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- CONFIG -->
+<div class="config-card">
+  <div class="config-title">⚙ BRAND CONFIG — set once before running test</div>
+  <div class="config-row" id="brand-selector-row" style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <span class="config-label">Saved Brand</span>
+    <select class="config-input" id="cfg-brand-select" style="max-width:220px" onchange="loadSavedBrand(this.value)">
+      <option value="">— select saved brand —</option>
+    </select>
+    <button class="config-apply" onclick="saveBrand()" style="background:rgba(16,185,129,.2);color:#10b981;border-color:rgba(16,185,129,.3)">💾 SAVE</button>
+    <button class="config-apply" onclick="deleteBrand()" style="background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.25)">✕</button>
+  </div>
+  <div class="config-row">
+    <span class="config-label">Brand Base URL</span>
+    <input class="config-input" id="cfg-url" value="https://echo-lp-dev.pages.dev" placeholder="https://lp.yourbrand.com">
+  </div>
+  <div class="config-row">
+    <span class="config-label">UX Mode</span>
+    <select class="config-input" id="cfg-ux" style="max-width:220px">
+      <option value="n">ux=n — Skip to Thank You (test mode)</option>
+      <option value="y">ux=y — Real destination (Cal.com / TypeBot)</option>
+    </select>
+  </div>
+  <div class="config-row">
+    <span class="config-label">GTM Container ID</span>
+    <input class="config-input" id="cfg-gtm" value="GTM-5VQV2339" placeholder="GTM-XXXXXXX">
+    <button class="config-apply" id="apply-btn">APPLY ↺</button>
+  </div>
+  <div class="config-urls" id="cfg-urls"></div>
+</div>
+
+<!-- PREVIOUS RUNS -->
+<div class="prev-runs-card">
+  <div class="prev-runs-hdr" onclick="toggleRuns()">
+    <span class="prev-runs-label">⏱ PREVIOUS RUNS</span>
+    <span id="prev-runs-count" style="font-family:var(--mono);font-size:10px;color:var(--muted)">loading...</span>
+    <span class="prev-runs-toggle" id="prev-runs-arrow">▶ expand</span>
+  </div>
+  <div class="prev-runs-body" id="prev-runs-body"></div>
+</div>
+
+<!-- ═══════════════ PHASE 0 ═══════════════ -->
+<div class="phase">
+  <div class="phase-num">0</div>
+  <div class="phase-title">Setup — GTM Preview + Install Diagnostics</div>
+  <span class="phase-badge" id="badge-0"></span>
+</div>
+<div class="card">
+  <div class="section-label">STEP 1 — CONNECT GTM PREVIEW (this opens the LP automatically)</div>
+  <div class="instr"><span class="instr-n">1</span><span class="instr-t">Go to <strong>tagmanager.google.com</strong> → container <code id="gtm-disp">GTM-5VQV2339</code> → click <strong>Preview</strong>.</span></div>
+  <div class="instr"><span class="instr-n">2</span><span class="instr-t">Copy the test URL below → paste into the GTM Preview box → click <strong>Connect</strong>. GTM opens the LP automatically in a new tab with tracking attached.</span></div>
+  <div class="copy-wrap">
+    <div class="copy-block" id="test-url-block">generating...</div>
+    <button class="copy-over-btn" onclick="copyEl('test-url-block',this)">COPY</button>
+  </div>
+  <div class="checklist">
+    <div class="ck" id="ck-connected">
+      <div class="ck-box"></div>
+      <div class="ck-label">GTM Preview shows <strong>"Connected"</strong> in green</div>
+      <div class="ck-btn-group">
+        <button class="ck-yes-btn" onclick="ckClick('connected','yes')">✓ YES</button>
+        <button class="ck-no-btn" onclick="ckClick('connected','no')">✗ NO</button>
+      </div>
+    </div>
+    <div class="ck" id="ck-pageopen">
+      <div class="ck-box"></div>
+      <div class="ck-label">LP tab opened with GTM debug bar active at top</div>
+      <div class="ck-btn-group">
+        <button class="ck-yes-btn" onclick="ckClick('pageopen','yes')">✓ YES</button>
+        <button class="ck-no-btn" onclick="ckClick('pageopen','no')">✗ NO</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <div class="section-label">STEP 2 — OPEN LP IN A NORMAL TAB (backup — if GTM didn't open it)</div>
+  <div class="alert alert-info" style="margin-bottom:10px">GTM Preview usually opens the LP automatically. Only use this button if it didn't.</div>
+  <button class="open-btn" style="background:var(--cyan);color:#000;font-size:12px;padding:10px 20px;margin-bottom:10px" onclick="openPage('lp')">▶ OPEN LANDING PAGE (normal tab)</button>
+
+  <div class="div"></div>
+  <div class="section-label">STEP 3 — INSTALL DIAGNOSTIC BOOKMARKLETS (one-time only)</div>
+  <div class="alert alert-info">With the LP tab open and bookmarks bar visible — <strong>create a folder for this brand first</strong> (right-click bookmarks bar → Add Folder → name it e.g. "BBMM"). Then <strong>drag each button below into that folder.</strong></div>
+
+  <div class="bm-card">
+    <div class="bm-title">🔵 LP DIAGNOSTIC — drag to bookmarks bar</div>
+    <div class="bm-row">
+      <a id="bm-lp-link" class="bm-link" href="#">⬡ LP Diagnostic</a>
+      <span class="bm-hint">Drag to your <strong>bookmarks bar</strong>. Click it on the LP tab when ready.</span>
+    </div>
+    <div class="bm-title" style="margin-top:12px">🟡 TY DIAGNOSTIC — drag to bookmarks bar</div>
+    <div class="bm-row">
+      <a id="bm-ty-link" class="bm-ty-link bm-link" href="#">⬡ TY Diagnostic</a>
+      <span class="bm-hint">Drag to your <strong>bookmarks bar</strong>. Click it on the TY tab when ready.</span>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <div class="ck" id="ck-bm">
+      <div class="ck-box"></div>
+      <div class="ck-label">Both bookmarklets dragged to bookmarks bar ✓</div>
+      <div class="ck-btn-group">
+        <button class="ck-yes-btn" onclick="ckClick('bm','yes')">✓ DONE</button>
+        <button class="ck-no-btn" onclick="ckClick('bm','no')">✗ SKIPPED</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="feedback-card">
+    <div class="feedback-label">📝 PHASE 0 NOTES</div>
+    <textarea class="feedback-area" id="fb-0" placeholder="Any issues during setup? GTM errors, connection problems..."></textarea>
+    <button class="feedback-submit" onclick="submitFeedback(0)">SUBMIT NOTE</button>
+  </div>
+  <div class="phase-btns">
+    <button class="phase-pass" onclick="markPhase(0,'pass')">✓ SETUP COMPLETE</button>
+    <button class="phase-fail" onclick="markPhase(0,'fail')">✗ FAILED</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PHASE 1 ═══════════════ -->
+<div class="phase">
+  <div class="phase-num">1</div>
+  <div class="phase-title">Landing Page — Visual + APS Check</div>
+  <span class="phase-badge" id="badge-1"></span>
+</div>
+<div class="card">
+  <div class="alert alert-info" style="margin-bottom:14px"><strong>Switch to the landing page tab.</strong> Check each item. Click ✓ YES or ✗ NO for each row.</div>
+
+  <div class="section-label">VISUAL CHECKS</div>
+  <div class="checklist">
+    <div class="ck" id="ck-hl"><div class="ck-box"></div><div class="ck-label">Headline shows <strong>"AmplifAI Test v2.3"</strong> — not default text</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('hl','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('hl','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-btn"><div class="ck-box"></div><div class="ck-label">CTA button is <strong>GREEN</strong> (confirms URL params loaded)</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('btn','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('btn','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-scar"><div class="ck-box"></div><div class="ck-label">Scarcity bar at bottom: <strong>"Only 3 spots remaining today"</strong></div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('scar','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('scar','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-myes"><div class="ck-box"></div><div class="ck-label">Checkbox appears above button — button is dimmed until ticked</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('myes','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('myes','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-prog"><div class="ck-box"></div><div class="ck-label"><strong>"Step 1 of 3"</strong> progress indicator visible</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('prog','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('prog','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-social"><div class="ck-box"></div><div class="ck-label">Social proof popup slides in from bottom-left after ~8 seconds</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('social','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('social','no')">✗ NO</button></div></div>
+  </div>
+
+  <div class="div"></div>
+  <div class="section-label">APS SCORING</div>
+  <div class="aps-indicator">
+    <span class="aps-arrow">👁</span>
+    <div>
+      <div class="aps-label">WATCH: APS score bottom-right corner of the LP</div>
+      <div class="aps-hint">Look for the <strong>gold box bottom-right</strong> that shows <code>APS: [number] | EPS: 72</code>. That is the live APS score. The debug panel top-right is separate — ignore it for APS tracking.</div>
+    </div>
+  </div>
+  <div class="checklist">
+    <div class="ck" id="ck-aps-debug"><div class="ck-box"></div><div class="ck-label">Gold APS widget visible bottom-right showing <strong>APS: [number] | EPS: 72</strong></div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('aps-debug','yes')">✓ YES</button><button class="ck-no-btn" onclick="ckClick('aps-debug','no')">✗ NO</button></div></div>
+    <div class="ck" id="ck-aps-scroll"><div class="ck-box"></div><div class="ck-label"><strong>Scroll to bottom</strong> → APS number increases in gold widget</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('aps-scroll','yes')">✓ INCREASED</button><button class="ck-no-btn" onclick="ckClick('aps-scroll','no')">✗ NO CHANGE</button></div></div>
+    <div class="ck" id="ck-aps-hover"><div class="ck-box"></div><div class="ck-label"><strong>Hover over CTA area</strong> several times → APS ticks up</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('aps-hover','yes')">✓ INCREASED</button><button class="ck-no-btn" onclick="ckClick('aps-hover','no')">✗ NO CHANGE</button></div></div>
+    <div class="ck" id="ck-aps-chk"><div class="ck-box"></div><div class="ck-label"><strong>Tick the checkbox</strong> → APS jumps up + button un-dims</div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('aps-chk','yes')">✓ JUMPED</button><button class="ck-no-btn" onclick="ckClick('aps-chk','no')">✗ NO CHANGE</button></div></div>
+  </div>
+
+  <div class="div"></div>
+  <div class="section-label">LP CONSOLE DIAGNOSTIC</div>
+  <div class="instr"><span class="instr-n">1</span><span class="instr-t">On the <strong>landing page tab</strong> — click the <strong>⬡ LP Diagnostic</strong> bookmarklet in your bookmarks bar.</span></div>
+  <div class="instr"><span class="instr-n">2</span><span class="instr-t">A modal appears on the page. Click <strong>COPY RESULT</strong> in that modal.</span></div>
+  <div class="instr"><span class="instr-n">3</span><span class="instr-t">Switch back to this tab → paste below → click <strong>PARSE</strong>.</span></div>
+  <textarea class="paste-area" id="lp-paste" placeholder="Paste LP diagnostic JSON here then click PARSE..."></textarea>
+  <button class="parse-btn" style="background:var(--cyan);color:#000" onclick="parseConsole('lp')">PARSE LP REPORT</button>
+  <span class="parse-err" id="lp-err"></span>
+  <div id="lp-rpt" class="report-out"></div>
+
+  <div class="feedback-card">
+    <div class="feedback-label">📝 PHASE 1 NOTES</div>
+    <textarea class="feedback-area" id="fb-1" placeholder="Visual issues, APS not updating, bookmarklet problems..."></textarea>
+    <button class="feedback-submit" onclick="submitFeedback(1)">SUBMIT NOTE</button>
+  </div>
+  <div class="phase-btns">
+    <button class="phase-pass" onclick="markPhase(1,'pass')">✓ LP PASS</button>
+    <button class="phase-fail" onclick="markPhase(1,'fail')">✗ LP FAIL</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PHASE 2 ═══════════════ -->
+<div class="phase">
+  <div class="phase-num">2</div>
+  <div class="phase-title">GTM Tags — Paste All, Auto-Check</div>
+  <span class="phase-badge" id="badge-2"></span>
+</div>
+<div class="card">
+  <div class="alert alert-info" style="margin-bottom:14px"><strong>Complete the full funnel first, then paste all tags at once from GTM Summary.</strong> GTM Preview tracks every page — one paste covers everything.</div>
+
+  <div class="section-label">STEP A — COMPLETE THE FULL FUNNEL</div>
+  <div class="instr"><span class="instr-n">1</span><span class="instr-t">The LP tab is already open with GTM Preview connected from Phase 0.</span></div>
+  <div class="instr"><span class="instr-n">2</span><span class="instr-t">Tick the <strong>checkbox</strong> on the LP (micro-yes) to un-dim the CTA button.</span></div>
+  <div class="instr"><span class="instr-n">3</span><span class="instr-t">Click the <strong>CTA button</strong>. A new tab opens — the Processing screen (Step 2). It will auto-redirect to the Thank You page (Step 3) after ~3 seconds.</span></div>
+  <div class="instr"><span class="instr-n">4</span><span class="instr-t">Wait for the Thank You page to fully load.</span></div>
+
+  <div class="div"></div>
+  <div class="section-label">STEP B — COPY ALL TAGS FROM GTM SUMMARY</div>
+  <div class="instr"><span class="instr-n">5</span><span class="instr-t">Switch to the <strong>GTM Preview tab</strong>.</span></div>
+  <div class="instr"><span class="instr-n">6</span><span class="instr-t">In the left panel click <strong>Summary</strong>.</span></div>
+  <div class="instr"><span class="instr-n">7</span><span class="instr-t">Click the <strong>Tags</strong> tab in the main area.</span></div>
+  <div class="instr"><span class="instr-n">8</span><span class="instr-t">You will see all tags fired across ALL steps (Step 1, 2, 3) in one list. <strong>Select all tag names and copy them.</strong></span></div>
+
+  <div class="div"></div>
+  <div class="section-label">STEP C — PASTE BELOW (auto-checks everything)</div>
+  <textarea class="paste-area" id="gtm-paste" style="min-height:140px" oninput="onGtmPaste(this)" placeholder="Paste ALL tag names from GTM Summary → Tags tab here&#10;&#10;Example:&#10;AmplifAI DSP - Archetype - Step 3 - Placeholder 1&#10;AmplifAI DSP - Angle - Step 3 - Placeholder 1&#10;AmplifAI DSP - APS Quality - Step 3 - Med-High&#10;AmplifAI DSP - Customer Journey - Step 3 - Pixel 1&#10;AdKernel XML Postback&#10;AdKernel DSP Postback&#10;Set Cookie - funnel_step - Step 3&#10;..."></textarea>
+  <div id="gtm-parse-out" class="gtm-parse-out"></div>
+
+  <div class="feedback-card">
+    <div class="feedback-label">📝 NOTES — any issues, missing tags, unexpected firings</div>
+    <textarea class="feedback-area" id="fb-2" placeholder="e.g. APS Quality tags not firing, Step 3 missing from Summary, unexpected tag counts..."></textarea>
+    <button class="feedback-submit" onclick="submitFeedback(2)">SUBMIT NOTE</button>
+  </div>
+  <div class="phase-btns">
+    <button class="phase-pass" onclick="markPhase(2,'pass')">✓ GTM PASS</button>
+    <button class="phase-fail" onclick="markPhase(2,'fail')">✗ GTM FAIL</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PHASE 3 ═══════════════ -->
+<div class="phase">
+  <div class="phase-num">3</div>
+  <div class="phase-title">Thank You Page — Console Diagnostic</div>
+  <span class="phase-badge" id="badge-3"></span>
+</div>
+<div class="card">
+  <div class="alert alert-info" style="margin-bottom:14px">The TY diagnostic checks <strong>all three steps</strong> — it reads the full dataLayer including CT events that passed through. No need to test CT separately.</div>
+
+  <div class="section-label">RUN TY DIAGNOSTIC</div>
+  <div class="instr"><span class="instr-n">1</span><span class="instr-t">Switch to the <strong>thank-you.html tab</strong>.</span></div>
+  <div class="instr"><span class="instr-n">2</span><span class="instr-t">Click the <strong>⬡ TY Diagnostic</strong> bookmarklet in your bookmarks bar.</span></div>
+  <div class="instr"><span class="instr-n">3</span><span class="instr-t">A modal appears. Click <strong>COPY RESULT</strong>. Switch back here and paste below.</span></div>
+  <button class="open-btn" style="background:var(--yellow);color:#000;margin-bottom:10px" onclick="openPage('ty')">▶ Open TY Directly</button>
+  <textarea class="paste-area" id="ty-paste" placeholder="Paste TY diagnostic JSON here then click PARSE..."></textarea>
+  <button class="parse-btn" style="background:var(--yellow);color:#000" onclick="parseConsole('ty')">PARSE TY REPORT</button>
+  <span class="parse-err" id="ty-err"></span>
+  <div id="ty-rpt" class="report-out"></div>
+
+  <div class="div"></div>
+  <div class="section-label">APS AT STEP 3 — MUST BE 100</div>
+  <div class="checklist">
+    <div class="ck" id="ck-aps100"><div class="ck-box"></div><div class="ck-label">In GTM Preview → <strong>thankyou_conversion</strong> event → Variables tab → <code>aps_current</code> = <strong>100</strong></div><div class="ck-btn-group"><button class="ck-yes-btn" onclick="ckClick('aps100','yes')">✓ IS 100</button><button class="ck-no-btn" onclick="ckClick('aps100','no')">✗ NOT 100</button></div></div>
+  </div>
+
+  <div class="feedback-card">
+    <div class="feedback-label">📝 PHASE 3 NOTES</div>
+    <textarea class="feedback-area" id="fb-3" placeholder="TY events missing, APS not 100, cookie passthrough issues..."></textarea>
+    <button class="feedback-submit" onclick="submitFeedback(3)">SUBMIT NOTE</button>
+  </div>
+  <div class="phase-btns">
+    <button class="phase-pass" onclick="markPhase(3,'pass')">✓ TY PASS</button>
+    <button class="phase-fail" onclick="markPhase(3,'fail')">✗ TY FAIL</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="final-box" id="final-box">
+  <div class="final-title" id="final-title"></div>
+  <div id="ux-feedback-wrap" style="display:none;margin-top:16px;margin-bottom:16px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:10px;padding:14px 16px">
+    <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#818cf8;margin-bottom:8px">💡 UX ENHANCEMENT / BUG REPORT — help improve this system</div>
+    <textarea id="ux-feedback-area" style="width:100%;min-height:60px;padding:10px 12px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--sans);font-size:12px;outline:none;resize:vertical;line-height:1.6" placeholder="Describe any confusing steps, bugs, or UX improvements for this test system..."></textarea>
+    <button onclick="(function(){var ta=document.getElementById('ux-feedback-area');var btn=event.target;if(!ta.value.trim())return;feedbackData['ux_enhancement']=ta.value;btn.textContent='✓ SUBMITTED';btn.style.background='rgba(16,185,129,.2)';btn.style.color='#10b981';btn.style.pointerEvents='none';buildFinal();})()" style="font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 16px;background:rgba(99,102,241,.2);color:#818cf8;border:1px solid rgba(99,102,241,.3);border-radius:5px;cursor:pointer;margin-top:8px;transition:all .15s">SUBMIT FEEDBACK</button>
+  </div>
+  <div class="final-sub" id="final-sub"></div>
+  <div id="final-claude-wrap" class="claude-box" style="display:none">
+    <div class="claude-label">📋 COPY THIS ENTIRE BLOCK — PASTE INTO CLAUDE CHAT</div>
+    <div class="claude-text" id="final-payload"></div>
+  </div>
+  <button class="copy-btn" id="final-copy-btn" style="display:none;background:var(--blue);color:#fff" onclick="copyFinal(this)">COPY FULL REPORT FOR CLAUDE</button>
+</div>
+
+</div>
+
+<script>
+var BASE = 'https://echo-lp-dev.pages.dev';
+var URLS = {lp:'',ty:''};
+var phaseStatus = {};
+var ckState = {};
+var parsedReports = {};
+var parsedGtmData = null;
+var feedbackData = {};
+
+/* ─── BOOKMARKLET SCRIPTS ─── */
+var BM_LP = '(function(){function run(){var R={meta:{url:location.href,ts:new Date().toISOString()},checks:{},errors:[],warnings:[],dl:[],aps_progression:[]};function p(k,d){R.checks[k]={result:"PASS",detail:d||""};}function f(k,d){R.checks[k]={result:"FAIL",detail:d||""};R.errors.push(k+": "+d);}function w(k,d){R.checks[k]={result:"WARN",detail:d||""};R.warnings.push(k+": "+d);}var dl=window.dataLayer||[];var ev=dl.map(function(e){return e.event;}).filter(Boolean);R.dl=dl.slice(0,20);dl.forEach(function(e){if(e.aps_current!==undefined)R.aps_progression.push({event:e.event||"push",aps:e.aps_current});});var lpe=dl.find(function(e){return e.event==="echo_lp_view";})||{};typeof window.dataLayer!=="undefined"?p("gtm_loaded","present"):f("gtm_loaded","window.dataLayer undefined");ev.indexOf("echo_lp_view")>-1?p("event_echo_lp_view","fired"):f("event_echo_lp_view","NOT found — run after page fully loads");ev.indexOf("lead_conversion")>-1?f("no_lead_bleed","FIRED on LP — bleeding"):p("no_lead_bleed","clean");lpe.funnel_step==="step_0"?p("funnel_step","step_0"):f("funnel_step",lpe.funnel_step?"got "+lpe.funnel_step:"missing — run after page loads");["conversion","archetype","angle","eps_score","aps_current"].forEach(function(k){lpe[k]!==undefined&&lpe[k]!==""?p("lp_"+k,String(lpe[k])):w("lp_"+k,"empty");});var ck={};document.cookie.split(";").forEach(function(c){var a=c.trim().split("=");if(a[0])ck[a[0]]=decodeURIComponent(a[1]||"");});["conversion","archetype","angle","eps_score"].forEach(function(k){ck[k]?p("cookie_"+k,ck[k]):w("cookie_"+k,"not set");});var t=Object.keys(R.checks).length,pa=Object.values(R.checks).filter(function(c){return c.result==="PASS";}).length,fa=Object.values(R.checks).filter(function(c){return c.result==="FAIL";}).length,wa=Object.values(R.checks).filter(function(c){return c.result==="WARN";}).length;R.summary={total:t,passed:pa,failed:fa,warned:wa,status:fa===0?(wa===0?"ALL PASS":"PASS WITH WARNINGS"):"FAILURES DETECTED"};R.page="LP";var ex=document.getElementById("amplifai-diag");if(ex)ex.remove();var json=JSON.stringify(R,null,2);var o=document.createElement("div");o.id="amplifai-diag";o.style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.93);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:monospace;padding:20px;";var sc=fa>0?"#ef4444":(wa>0?"#f59e0b":"#10b981");o.innerHTML="<div style=\\"background:#0d1117;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px;max-width:580px;width:100%;max-height:86vh;display:flex;flex-direction:column;gap:12px;\\"><div style=\\"display:flex;align-items:center;justify-content:space-between;\\"><span style=\\"font-size:13px;font-weight:700;color:"+sc+"\\">LP — "+R.summary.status+"</span><button onclick=\\"document.getElementById(\'amplifai-diag\').remove()\\" style=\\"background:rgba(255,255,255,0.1);border:none;color:#fff;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:13px;\\">✕</button></div><div style=\\"font-size:10px;color:#64748b;\\">Wait for APS widget before running. PASS:"+pa+" FAIL:"+fa+" WARN:"+wa+"</div><textarea id=\\"amplifai-out\\" style=\\"flex:1;min-height:260px;background:#060a10;border:1px solid rgba(6,182,212,0.25);border-radius:6px;color:#06b6d4;font-size:9px;padding:10px;resize:none;\\" readonly></textarea><button id=\\"amplifai-copy\\" style=\\"background:#06b6d4;color:#000;border:none;padding:11px;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;\\">COPY RESULT</button></div>";document.body.appendChild(o);document.getElementById("amplifai-out").value=json;document.getElementById("amplifai-copy").onclick=function(){var btn=this;navigator.clipboard.writeText(json).then(function(){btn.textContent="✓ COPIED — switch to test page and paste";btn.style.background="#10b981";}).catch(function(){var t=document.getElementById("amplifai-out");t.select();document.execCommand("copy");btn.textContent="✓ COPIED";btn.style.background="#10b981";});};};if(document.body.classList.contains("ready")){run();}else{var tries=0;var wait=setInterval(function(){tries++;if(document.body.classList.contains("ready")||tries>20){clearInterval(wait);run();}},300);}})();';
+
+var BM_TY = '(function(){var R={meta:{url:location.href,ts:new Date().toISOString()},checks:{},errors:[],warnings:[],dl:[],network_pixels:[]};function p(k,d){R.checks[k]={result:"PASS",detail:d||""};}function f(k,d){R.checks[k]={result:"FAIL",detail:d||""};R.errors.push(k+": "+d);}function w(k,d){R.checks[k]={result:"WARN",detail:d||""};R.warnings.push(k+": "+d);}var dl=window.dataLayer||[];var ev=dl.map(function(e){return e.event;}).filter(Boolean);R.dl=dl.slice(0,25);typeof window.dataLayer!=="undefined"?p("gtm_loaded","present"):f("gtm_loaded","undefined");ev.indexOf("thankyou_conversion")>-1?p("event_thankyou_conversion","fired"):f("event_thankyou_conversion","NOT fired");var dp3=dl.find(function(e){return e.event==="dsp_postback"&&e.dsp_step==="step_3";});dp3?p("dsp_postback_step3","fired"):f("dsp_postback_step3","NOT fired or wrong step");var ty=dl.find(function(e){return e.event==="thankyou_conversion";})||{};ty.aps_current===100||ty.aps_score===100?p("aps_equals_100","APS=100"):f("aps_equals_100","NOT 100. aps_current="+ty.aps_current);["conversion","archetype","angle","eps_score","funnel_step"].forEach(function(k){ty[k]!==undefined&&ty[k]!==""?p("ty_"+k,String(ty[k])):w("ty_"+k,"missing");});ty.funnel_step==="step_3"?p("ty_funnel_step","step_3"):f("ty_funnel_step","got: "+ty.funnel_step);var tyCount=dl.filter(function(e){return e.event==="thankyou_conversion";}).length;tyCount===1?p("ty_event_count","fired 1x"):f("ty_event_count","fired "+tyCount+"x — should be 1");var ck={};document.cookie.split(";").forEach(function(c){var a=c.trim().split("=");if(a[0])ck[a[0]]=decodeURIComponent(a[1]||"");});["conversion","archetype","angle","eps_score","aps_score"].forEach(function(k){ck[k]?p("cookie_"+k,ck[k]):w("cookie_"+k,"not set");});try{var res=performance.getEntriesByType("resource");var hits={};res.forEach(function(r){if(r.name.indexOf("amplifai.it")>-1){var b=r.name.split("?")[0];if(!hits[b])hits[b]={url:r.name.slice(0,130),count:0};hits[b].count++;}});R.network_pixels=Object.values(hits);R.network_pixels.length>0?p("network_pixels",R.network_pixels.length+" endpoint(s) hit"):w("network_pixels","none detected");}catch(e){w("network_pixels","unavailable");}var t=Object.keys(R.checks).length,pa=Object.values(R.checks).filter(function(c){return c.result==="PASS";}).length,fa=Object.values(R.checks).filter(function(c){return c.result==="FAIL";}).length,wa=Object.values(R.checks).filter(function(c){return c.result==="WARN";}).length;R.summary={total:t,passed:pa,failed:fa,warned:wa,status:fa===0?(wa===0?"ALL PASS":"PASS WITH WARNINGS"):"FAILURES DETECTED"};R.page="TY";var ex=document.getElementById("amplifai-diag");if(ex)ex.remove();var json=JSON.stringify(R,null,2);var o=document.createElement("div");o.id="amplifai-diag";o.style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.93);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:monospace;padding:20px;";var sc=fa>0?"#ef4444":(wa>0?"#f59e0b":"#10b981");o.innerHTML="<div style=\\"background:#0d1117;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px;max-width:580px;width:100%;max-height:86vh;display:flex;flex-direction:column;gap:12px;\\"><div style=\\"display:flex;align-items:center;justify-content:space-between;\\"><span style=\\"font-size:13px;font-weight:700;color:"+sc+"\\">TY — "+R.summary.status+"</span><button onclick=\\"document.getElementById(\'amplifai-diag\').remove()\\" style=\\"background:rgba(255,255,255,0.1);border:none;color:#fff;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:13px;\\">✕</button></div><div style=\\"font-size:10px;color:#64748b;\\">PASS:"+pa+" FAIL:"+fa+" WARN:"+wa+"</div><textarea id=\\"amplifai-out\\" style=\\"flex:1;min-height:260px;background:#060a10;border:1px solid rgba(245,158,11,0.25);border-radius:6px;color:#f59e0b;font-size:9px;padding:10px;resize:none;\\" readonly></textarea><button id=\\"amplifai-copy\\" style=\\"background:#f59e0b;color:#000;border:none;padding:11px;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;\\">COPY RESULT</button></div>";document.body.appendChild(o);document.getElementById("amplifai-out").value=json;document.getElementById("amplifai-copy").onclick=function(){var btn=this;navigator.clipboard.writeText(json).then(function(){btn.textContent="✓ COPIED — switch to test page and paste";btn.style.background="#10b981";}).catch(function(){var t=document.getElementById("amplifai-out");t.select();document.execCommand("copy");btn.textContent="✓ COPIED";btn.style.background="#10b981";});};})();';
+
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('apply-btn').addEventListener('click', applyConfig);
+  applyConfig();
+  loadRuns();
+  setBookmarklets();
+  populateBrandDropdown('');
+});
+
+function setBookmarklets() {
+  document.getElementById('bm-lp-link').href = 'javascript:' + encodeURIComponent(BM_LP);
+  document.getElementById('bm-ty-link').href = 'javascript:' + encodeURIComponent(BM_TY);
+}
+
+/* ─── BRAND MEMORY ─── */
+function getBrands() {
+  try { return JSON.parse(localStorage.getItem('amplifai_brands') || '{}'); } catch(e) { return {}; }
+}
+function saveBrand() {
+  var url = (document.getElementById('cfg-url').value || '').trim().replace(/\/$/, '');
+  var gtm = (document.getElementById('cfg-gtm').value || '').trim();
+  if (!url || !gtm) { alert('Fill in Brand Base URL and GTM ID first.'); return; }
+  var name = prompt('Brand name to save:', url.replace(/https?:\/\//, '').split('.')[0].toUpperCase());
+  if (!name) return;
+  var brands = getBrands();
+  brands[name] = { url: url, gtm: gtm };
+  localStorage.setItem('amplifai_brands', JSON.stringify(brands));
+  populateBrandDropdown(name);
+}
+function loadSavedBrand(name) {
+  if (!name) return;
+  var brands = getBrands();
+  var b = brands[name];
+  if (!b) return;
+  document.getElementById('cfg-url').value = b.url;
+  document.getElementById('cfg-gtm').value = b.gtm;
+  applyConfig();
+}
+function deleteBrand() {
+  var sel = document.getElementById('cfg-brand-select');
+  var name = sel.value;
+  if (!name) return;
+  if (!confirm('Delete saved brand "' + name + '"?')) return;
+  var brands = getBrands();
+  delete brands[name];
+  localStorage.setItem('amplifai_brands', JSON.stringify(brands));
+  populateBrandDropdown('');
+}
+function populateBrandDropdown(selectName) {
+  var sel = document.getElementById('cfg-brand-select');
+  if (!sel) return;
+  var brands = getBrands();
+  var keys = Object.keys(brands);
+  sel.innerHTML = '<option value="">— select saved brand —</option>';
+  keys.forEach(function(k) {
+    var opt = document.createElement('option');
+    opt.value = k; opt.textContent = k;
+    if (k === selectName) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function applyConfig() {
+  var u = document.getElementById('cfg-url');
+  var g = document.getElementById('cfg-gtm');
+  BASE = ((u && u.value.trim()) || 'https://echo-lp-dev.pages.dev').replace(/\/$/, '');
+  var gtmId = ((g && g.value.trim()) || 'GTM-5VQV2339');
+  var d = document.getElementById('gtm-disp');
+  if (d) d.textContent = gtmId;
+
+  var uxEl = document.getElementById('cfg-ux');
+  var uxVal = (uxEl && uxEl.value) || 'n';
+
+  var qs = '?conversion=TEST_CONV_001&campaign=TEST_12345&banner=P1_AT1_AG1_V001&goal_id=TEST_9999'
+    + '&archetype=optimizer&angle=data_driven&eps_score=72&at=1&ag=1&phase=P1'
+    + '&hl=AmplifAI+Test+v2.3&sh=Full+funnel+diagnostic+run'
+    + '&cta=Test+CTA&btn_color=%2316a34a&test_all=1&debug=1&ret=y&ux=' + uxVal;
+
+  var qsReset = qs + '&reset_funnel=1';
+  var qsStep1 = qs + '&set_funnel=step_1';
+  var qsStep2 = qs + '&set_funnel=step_2';
+
+  URLS.lp = BASE + '/' + qs;
+  URLS.ty = BASE + '/thank-you.html' + qs;
+
+  var tb = document.getElementById('test-url-block');
+  if (tb) tb.textContent = URLS.lp;
+
+  var ud = document.getElementById('cfg-urls');
+  if (ud) ud.innerHTML =
+    '<div class="config-url-row">LP → <span>' + URLS.lp.slice(0, 90) + '...</span></div>'
+    + '<div class="config-url-row">TY → <span style="color:var(--yellow)">' + URLS.ty.slice(0, 70) + '...</span></div>';
+}
+
+function openPage(p) { window.open(URLS[p], '_blank'); }
+
+function copyEl(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(function() { flash(btn); });
+}
+
+function flash(btn) {
+  var o = btn.textContent, oc = btn.className;
+  btn.textContent = 'COPIED ✓';
+  btn.classList.add('copied');
+  setTimeout(function() { btn.textContent = o; btn.className = oc; }, 2000);
+}
+
+/* ─── CHECKLIST ─── */
+function ckClick(key, val) {
+  var row = document.getElementById('ck-' + key);
+  if (!row) return;
+  if (row.classList.contains('yes') || row.classList.contains('no')) return;
+  row.classList.remove('yes', 'no');
+  row.classList.add(val);
+  var box = row.querySelector('.ck-box');
+  if (box) box.textContent = val === 'yes' ? '✓' : '✗';
+  var btns = row.querySelectorAll('.ck-yes-btn,.ck-no-btn');
+  btns.forEach(function(b){b.style.opacity='0.3';b.style.pointerEvents='none';});
+  var chosen = row.querySelector(val==='yes'?'.ck-yes-btn':'.ck-no-btn');
+  if(chosen){chosen.style.opacity='0.9';}
+  ckState[key] = val;
+  buildFinal();
+}
+
+// Click anywhere on row = YES
+document.addEventListener('click',function(e){
+  var row=e.target.closest('.ck');
+  if(!row)return;
+  if(e.target.classList.contains('ck-no-btn')||e.target.classList.contains('ck-yes-btn'))return;
+  var id=row.id.replace('ck-','');
+  if(id)ckClick(id,'yes');
+});
+
+/* ─── PHASE ─── */
+function markPhase(num, status) {
+  phaseStatus[num] = status;
+  var badge = document.getElementById('badge-' + num);
+  if (badge) { badge.textContent = status === 'pass' ? '✓ PASS' : '✗ FAIL'; badge.className = 'phase-badge ' + status; }
+  var dot = document.getElementById('pd' + num);
+  if (dot) { dot.classList.remove('pass', 'fail', 'active'); dot.classList.add(status); }
+  var done = Object.keys(phaseStatus).length;
+  document.getElementById('prog-label').textContent = done + ' / 4';
+  buildFinal();
+}
+
+/* ─── FEEDBACK ─── */
+function submitFeedback(phase) {
+  var ta = document.getElementById('fb-' + phase);
+  var btn = ta ? ta.nextElementSibling : null;
+  if (!ta || !ta.value.trim()) return;
+  feedbackData['phase_' + phase] = ta.value;
+  ta.disabled = true;
+  if (btn) { btn.textContent = '✓ SAVED'; btn.classList.add('submitted'); }
+  buildFinal();
+}
+
+/* ─── CONSOLE PARSE ─── */
+function parseConsole(page) {
+  var raw = document.getElementById(page + '-paste').value.trim();
+  var err = document.getElementById(page + '-err');
+  if (!raw) { err.textContent = 'Nothing pasted.'; return; }
+  var data;
+  try { data = JSON.parse(raw); } catch (e) { err.textContent = 'Not valid JSON. Paste the entire { ... } block.'; return; }
+  err.textContent = '';
+  parsedReports[page] = data;
+  renderConsoleReport(page, data);
+  buildFinal();
+}
+
+function renderConsoleReport(page, data) {
+  var out = document.getElementById(page + '-rpt');
+  var sum = data.summary || {};
+  var fail = sum.failed > 0;
+  var col = fail ? '#ef4444' : (sum.warned > 0 ? '#f59e0b' : '#10b981');
+  var h = '<div class="rpt-summary" style="background:' + (fail ? 'rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2)' : 'rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)') + '">'
+    + '<div class="rpt-status" style="color:' + col + '">' + (fail ? '❌ ' : '✅ ') + (sum.status || '') + '</div>'
+    + '<div class="rpt-counts">Pass: ' + (sum.passed || 0) + ' · Fail: ' + (sum.failed || 0) + ' · Warn: ' + (sum.warned || 0) + '</div></div>';
+
+  if (data.errors && data.errors.length) {
+    h += '<div class="err-block"><div class="err-title">❌ ERRORS</div>';
+    data.errors.forEach(function(e) { h += '<div class="err-line">' + esc(e) + '</div>'; });
+    h += '</div>';
+  }
+  if (data.aps_progression && data.aps_progression.length) {
+    h += '<div style="margin-bottom:8px"><div class="section-label" style="margin-bottom:4px">APS PROGRESSION</div>';
+    data.aps_progression.forEach(function(a) { h += '<div style="font-family:var(--mono);font-size:9px;color:#94a3b8;padding:1px 0">' + esc(a.event) + ': <strong style="color:var(--text)">' + a.aps + '</strong></div>'; });
+    h += '</div>';
+  }
+  if (data.network_pixels && data.network_pixels.length) {
+    h += '<div style="margin-bottom:8px"><div class="section-label" style="color:var(--yellow);margin-bottom:4px">NETWORK PIXELS</div>';
+    data.network_pixels.forEach(function(n) { h += '<div style="font-family:var(--mono);font-size:9px;color:#94a3b8;padding:1px 0">' + esc(n.url.slice(0, 80)) + '... <strong style="color:' + (n.count > 3 ? 'var(--red)' : 'var(--text)') + '">×' + n.count + '</strong></div>'; });
+    h += '</div>';
+  }
+  Object.entries(data.checks || {}).forEach(function(kv) {
+    var k = kv[0], v = kv[1];
+    var cls = v.result === 'PASS' ? 'pr' : v.result === 'FAIL' ? 'fr' : 'wr';
+    var ic = v.result === 'PASS' ? '✓' : v.result === 'FAIL' ? '✗' : '⚠';
+    h += '<div class="rpt-row ' + cls + '"><span style="min-width:14px;flex-shrink:0">' + ic + '</span><span class="rpt-key">' + esc(k) + '</span><span class="rpt-det">' + esc(String(v.detail || '')) + '</span></div>';
+  });
+  out.innerHTML = h;
+}
+
+/* ─── GTM TAG PARSER ─── */
+var GTM_UI_NOISE = /^(Tags fired|Tags not fired|Tag Name|Custom Image|Custom HTML|API call|dataLayer\.push|Output of|Variables|Data Layer|Consent|Console|Summary|Container|Source|On-page|Preview|Event:|GTM-|Master Template|Tags$|Firing|Not Firing|\d+ tags did not fire|https?:\/\/|Page:|vent:)/i;
+
+function onGtmPaste(ta) {
+  var raw = ta.value;
+  if (!raw.trim()) { document.getElementById('gtm-parse-out').innerHTML = ''; return; }
+  var lines = raw.split('\n').map(function(l) { return l.trim(); }).filter(function(l) {
+    return l && !GTM_UI_NOISE.test(l) && l.length > 5;
+  });
+
+  var tags = lines.map(function(name) {
+    var type = 'other', step = null;
+    var sm = name.match(/Step\s*(\d)/i); if (sm) step = +sm[1];
+    if (/Customer Journey/i.test(name)) type = 'CJ';
+    else if (/Archetype/i.test(name)) type = 'Arch';
+    else if (/\bAngle\b/i.test(name) && !/AdKernel/i.test(name)) type = 'Angle';
+    else if (/APS Quality/i.test(name)) type = 'APS_Q';
+    else if (/XML Postback|AdKernel XML/i.test(name)) type = 'AK_XML';
+    else if (/DSP Postback|AdKernel DSP/i.test(name)) type = 'AK_DSP';
+    return { name: name, type: type, step: step };
+  });
+  parsedGtmData = tags;
+
+  // Detect Pages Tagged warning (external domain interrupted GTM session)
+  var pagesTaggedWarning = '';
+  var rawLower = raw;
+  var ptMatch = rawLower.match(/Pages Tagged:\s*(\d+)\/(\d+)/i);
+  if (ptMatch && parseInt(ptMatch[1]) < parseInt(ptMatch[2])) {
+    pagesTaggedWarning = '<div style="margin-bottom:10px;padding:10px 12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;font-size:11px;color:var(--yellow)"><strong>⚠ GTM SESSION INTERRUPTED</strong> — Pages Tagged: ' + ptMatch[1] + '/' + ptMatch[2] + '. GTM Preview lost the session when the user passed through an external domain (TypeBot, Cal.com, etc). Step 3 tags cannot be verified via this paste. <strong>TY Diagnostic is the source of truth for Step 3.</strong></div>';
+  }
+  function chk(label, pass, detail, warn) {
+    checks.push({ label: label, pass: pass, detail: detail, warn: warn || false });
+  }
+
+  // Step 0: no CJ, no AK
+  var s0 = tags.filter(function(t) { return t.step === 0; });
+  var s0cj = s0.filter(function(t) { return t.type === 'CJ'; });
+  var s0ak = s0.filter(function(t) { return t.type === 'AK_XML' || t.type === 'AK_DSP'; });
+  var s0arch = s0.filter(function(t) { return t.type === 'Arch'; });
+  var s0angle = s0.filter(function(t) { return t.type === 'Angle'; });
+  var s0aps = s0.filter(function(t) { return t.type === 'APS_Q'; });
+  chk('Step 0 — Archetype blocked (blocking trigger working)', s0arch.length === 0, s0arch.length === 0 ? 'correctly blocked ✓' : '⚠ FIRED — should be blocked');
+  chk('Step 0 — Angle blocked (blocking trigger working)', s0angle.length === 0, s0angle.length === 0 ? 'correctly blocked ✓' : '⚠ FIRED — should be blocked');
+  chk('Step 0 — APS Quality blocked (blocking trigger working)', s0aps.length === 0, s0aps.length === 0 ? 'correctly blocked ✓' : '⚠ FIRED — should be blocked');
+  chk('Step 0 — Customer Journey must NOT fire', s0cj.length === 0, s0cj.length > 0 ? s0cj.map(function(t) { return t.name; }).join(', ') : 'clean');
+  chk('Step 0 — AdKernel must NOT fire', s0ak.length === 0, s0ak.length > 0 ? s0ak.map(function(t) { return t.name; }).join(', ') : 'clean');
+
+  // Step 1
+  var s1 = tags.filter(function(t) { return t.step === 1; });
+  var s1cj = s1.filter(function(t) { return t.type === 'CJ'; });
+  var s1arch = s1.filter(function(t) { return t.type === 'Arch'; });
+  var s1angle = s1.filter(function(t) { return t.type === 'Angle'; });
+  var s1aps = s1.filter(function(t) { return t.type === 'APS_Q'; });
+  chk('Step 1 — Customer Journey blocked (full funnel: cookie=step_3)', s1cj.length === 0, s1cj.length === 0 ? 'correctly blocked ✓' : s1cj.length + ' fired — check blocking trigger');
+  chk('Step 1 — Archetype/Angle/APS blocked (full funnel: cookie=step_3)', s1arch.length === 0 && s1angle.length === 0 && s1aps.length === 0, (s1arch.length === 0 && s1angle.length === 0 && s1aps.length === 0) ? 'correctly blocked ✓' : 'Arch:' + s1arch.length + ' Angle:' + s1angle.length + ' APS:' + s1aps.length + ' — check blocking trigger');
+
+  // AdKernel — Summary tab shows 1× regardless of actual firing count
+  var allXML = tags.filter(function(t) { return t.type === 'AK_XML'; });
+  var allDSP = tags.filter(function(t) { return t.type === 'AK_DSP'; });
+  chk('AdKernel XML Postback fired', allXML.length >= 1, allXML.length >= 1 ? allXML.length + ' detected ✓' : 'not found');
+  chk('AdKernel DSP Postback fired', allDSP.length >= 1, allDSP.length >= 1 ? allDSP.length + ' detected ✓' : 'not found');
+
+  // Step 2
+  var s2 = tags.filter(function(t) { return t.step === 2; });
+  var s2cj = s2.filter(function(t) { return t.type === 'CJ'; });
+  chk('Step 2 — Customer Journey blocked (full funnel: cookie=step_3)', s2cj.length === 0, s2cj.length === 0 ? 'correctly blocked ✓' : s2cj.length + ' fired — check blocking trigger');
+
+  // Step 3
+  var s3 = tags.filter(function(t) { return t.step === 3; });
+  var s3cj = s3.filter(function(t) { return t.type === 'CJ'; });
+  chk('Step 3 — Customer Journey fires (1 slot)', s3cj.length === 1, s3cj.length === 0 ? 'not found' : s3cj.length + ' fired');
+
+  var passes = checks.filter(function(c) { return c.pass; }).length;
+  var fails = checks.filter(function(c) { return !c.pass; }).length;
+
+  var html = '<div style="margin-bottom:8px"><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:' + (fails > 0 ? 'var(--red)' : 'var(--green)') + ';margin-bottom:10px">' + (fails > 0 ? '❌ ' : '✅ ') + 'GTM AUTO-CHECK: ' + passes + ' pass / ' + fails + ' fail — ' + tags.length + ' tags parsed</div>';
+  checks.forEach(function(c) {
+    var cls = c.pass ? 'pass-row' : 'fail-row';
+    var icon = c.pass ? '✓' : '✗';
+    html += '<div class="gtm-check-row ' + cls + '"><span class="gtm-icon">' + icon + '</span><span class="gtm-check-label">' + esc(c.label) + '</span><span style="font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0">' + esc(c.detail) + '</span></div>';
+  });
+
+  // List unrecognized tags
+  var other = tags.filter(function(t) { return t.type === 'other'; });
+  if (other.length) {
+    html += '<div style="margin-top:10px;font-family:var(--mono);font-size:9px;color:var(--muted)">UNCLASSIFIED TAGS (' + other.length + '):</div>';
+    other.slice(0, 5).forEach(function(t) { html += '<div style="font-family:var(--mono);font-size:9px;color:#64748b;padding:2px 0">' + esc(t.name) + '</div>'; });
+    if (other.length > 5) html += '<div style="font-family:var(--mono);font-size:9px;color:#64748b">...+' + (other.length - 5) + ' more</div>';
+  }
+  html += '</div>';
+  document.getElementById('gtm-parse-out').innerHTML = pagesTaggedWarning + html;
+  buildFinal();
+}
+
+/* ─── FINAL REPORT ─── */
+function buildFinal() {
+  if (Object.keys(phaseStatus).length === 0) return;
+  var box = document.getElementById('final-box');
+  box.classList.add('visible');
+
+  var anyFail = Object.values(phaseStatus).some(function(s) { return s === 'fail'; })
+    || ['lp', 'ty'].some(function(p) { return parsedReports[p] && parsedReports[p].summary && parsedReports[p].summary.failed > 0; })
+    || Object.values(ckState).some(function(s) { return s === 'no'; });
+
+  var titleEl = document.getElementById('final-title');
+  var subEl = document.getElementById('final-sub');
+  var wrap = document.getElementById('final-claude-wrap');
+  var payEl = document.getElementById('final-payload');
+  var copyBtn = document.getElementById('final-copy-btn');
+
+  if (!anyFail && Object.keys(phaseStatus).length >= 4) {
+    titleEl.style.color = '#10b981'; titleEl.textContent = '✅ ALL PASS — BUILD LOCKED';
+    subEl.textContent = 'Full funnel confirmed. LP → CT → TY. All GTM events correct. Safe to proceed.';
+    wrap.style.display = 'none'; copyBtn.style.display = 'none';
+    document.getElementById('ux-feedback-wrap').style.display = 'none';
+    saveRun({ test_run: new Date().toISOString(), base_url: BASE, phase_results: phaseStatus, status: 'ALL PASS' });
+    return;
+  }
+
+  titleEl.style.color = '#ef4444'; titleEl.textContent = '❌ ISSUES DETECTED';
+  subEl.textContent = 'Copy the report below and paste it into the Claude chat window.';
+  document.getElementById('ux-feedback-wrap').style.display = 'block';
+  wrap.style.display = 'block'; copyBtn.style.display = 'inline-flex';
+
+  var payload = {
+    test_run: new Date().toISOString(),
+    base_url: BASE,
+    phase_results: phaseStatus,
+    visual_checks: ckState,
+    gtm_auto_check: parsedGtmData ? summarizeGtm(parsedGtmData) : null,
+    console_reports: {},
+    feedback: feedbackData,
+    phase_fails: Object.keys(phaseStatus).filter(function(k) { return phaseStatus[k] === 'fail'; }),
+    issues: Object.keys(ckState).filter(function(k) { return ckState[k] === 'no'; })
+  };
+
+  ['lp', 'ty'].forEach(function(pg) {
+    if (parsedReports[pg]) payload.console_reports[pg] = {
+      summary: parsedReports[pg].summary,
+      errors: parsedReports[pg].errors,
+      warnings: parsedReports[pg].warnings,
+      checks: parsedReports[pg].checks,
+      aps_progression: parsedReports[pg].aps_progression,
+      network_pixels: parsedReports[pg].network_pixels
+    };
+  });
+
+  payEl.textContent = JSON.stringify(payload, null, 2);
+  saveRun({ test_run: new Date().toISOString(), base_url: BASE, phase_results: phaseStatus, status: 'ISSUES' });
+}
+
+function summarizeGtm(tags) {
+  var byType = {};
+  tags.forEach(function(t) {
+    if (!byType[t.type]) byType[t.type] = [];
+    byType[t.type].push({ name: t.name, step: t.step });
+  });
+  return { total: tags.length, by_type: byType };
+}
+
+function copyFinal(btn) {
+  navigator.clipboard.writeText(document.getElementById('final-payload').textContent).then(function() { flash(btn); });
+}
+
+/* ─── RUNS ─── */
+function saveRun(data) {
+  try {
+    var runs = JSON.parse(localStorage.getItem('amplifai_runs_v5') || '[]');
+    runs.push({ ts: data.test_run, url: (data.base_url || '').replace('https://', '').slice(0, 40), status: data.status || 'PARTIAL' });
+    if (runs.length > 10) runs = runs.slice(-10);
+    localStorage.setItem('amplifai_runs_v5', JSON.stringify(runs));
+    loadRuns();
+  } catch (e) {}
+}
+
+function loadRuns() {
+  try {
+    var runs = JSON.parse(localStorage.getItem('amplifai_runs_v5') || '[]');
+    var cnt = document.getElementById('prev-runs-count');
+    if (cnt) cnt.textContent = runs.length ? runs.length + ' saved' : 'none';
+    var body = document.getElementById('prev-runs-body');
+    if (!body || !runs.length) return;
+    var html = '';
+    runs.slice().reverse().forEach(function(r) {
+      var pass = r.status === 'ALL PASS';
+      html += '<div style="display:flex;gap:14px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;">'
+        + '<span style="color:' + (pass ? 'var(--green)' : 'var(--red)') + '">' + (pass ? '✓' : '✗') + '</span>'
+        + '<span style="color:var(--muted)">' + (r.ts || '').slice(0, 16).replace('T', ' ') + '</span>'
+        + '<span style="color:var(--cyan);flex:1">' + r.url + '</span>'
+        + '<span style="color:var(--muted)">' + r.status + '</span>'
+        + '</div>';
+    });
+    body.innerHTML = html || '<div style="font-family:var(--mono);font-size:10px;color:var(--muted);padding:8px 0">No runs yet.</div>';
+  } catch (e) {}
+}
+
+function toggleRuns() {
+  var body = document.getElementById('prev-runs-body');
+  var arrow = document.getElementById('prev-runs-arrow');
+  var open = body.classList.toggle('open');
+  if (arrow) arrow.textContent = open ? '▼ collapse' : '▶ expand';
+}
+
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+</script>
+</body>
+</html>

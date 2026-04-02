@@ -1,0 +1,494 @@
+{
+  "_SETUP_CHECKLIST": "╔══════════════════════════════════════════════════════════════════╗",
+  "_SETUP_CHECKLIST_2": "║  🚀 NEW BRAND SETUP — WHAT YOU NEED BEFORE YOU START            ║",
+  "_SETUP_CHECKLIST_3": "╠══════════════════════════════════════════════════════════════════╣",
+  "_SETUP_CHECKLIST_4": "║  1. ⚡ GTM Container ID  (GTM-XXXXXXX)  ← from GTM > Admin       ║",
+  "_SETUP_CHECKLIST_5": "║  2. ⚡ AdKernel Account ID               ← from AdKernel dashboard║",
+  "_SETUP_CHECKLIST_6": "║  3. ⚡ Destination URL (TypeBot, Calendly, product page, etc.)    ║",
+  "_SETUP_CHECKLIST_7": "║  4. ⚡ Hero background image (desktop + mobile) → upload /public/ ║",
+  "_SETUP_CHECKLIST_8": "║  5. ⚡ Default headline, subheadline, CTA button text            ║",
+  "_SETUP_CHECKLIST_9": "║  6. ⚡ Privacy Policy, Terms of Service, Contact page URLs       ║",
+  "_SETUP_CHECKLIST_10": "║  7.    Brand logo file → upload to /public/ (optional)           ║",
+  "_SETUP_CHECKLIST_11": "║  8.    Social media profile URLs (optional)                      ║",
+  "_SETUP_CHECKLIST_12": "╠══════════════════════════════════════════════════════════════════╣",
+  "_SETUP_CHECKLIST_13": "║  👉 Search for ⚡ REQUIRED to find every field you MUST fill in. ║",
+  "_SETUP_CHECKLIST_14": "║  👉 Everything else has a working default — change only if needed.║",
+  "_SETUP_CHECKLIST_15": "║  👉 NEVER change property names. Edit VALUES only.               ║",
+  "_SETUP_CHECKLIST_16": "╚══════════════════════════════════════════════════════════════════╝",
+
+  "_comment": "╔══════════════════════════════════════════════════════════════╗",
+  "_comment2": "║  AMPLIFAI ECHO LP — BRAND CONFIGURATION v4.4                ║",
+  "_comment3": "║  Edit VALUES only. DO NOT change property names.            ║",
+  "_comment4": "║  Every brand gets its own copy of this file.                ║",
+  "_comment5": "╚══════════════════════════════════════════════════════════════╝",
+  "_version": "4.4",
+  "_updated": "2026-03-23",
+
+  "brand": {
+    "_comment": "🏷️  ========== STEP 1: BRAND IDENTIFIERS ==========",
+    "_help": "Core brand identity. Used across the entire funnel. Start here.",
+    "name": "AmplifAI",
+    "_name_help": "⚡ REQUIRED — Your company/brand name. Appears in browser tab title and footer copyright.",
+    "code": "aai",
+    "_code_help": "2-4 letter lowercase brand code. Used in image filenames. Example: bbmm, kwv, nike, aai",
+    "domain": "https://echo-lp-dev.pages.dev",
+    "_domain_help": "⚡ REQUIRED — Your landing page domain (lp.yourbrand.com). No trailing slash.",
+    "website_url": "https://www.amplifai.it.com",
+    "_website_url_help": "Main brand website URL. Footer logo links here and opens in new window.",
+    "gtmId": "GTM-5VQV2339",
+    "_gtmId_help": "⚡ REQUIRED — Google Tag Manager container ID. Found in GTM > Admin > Container Settings.",
+    "_gtmId_critical": "🚨 CRITICAL: Without a valid GTM ID, NO tracking, NO postbacks, NO retargeting fires.",
+    "accent_color": "#4F46E5",
+    "_accent_color_help": "Primary brand color (hex code). Used as CTA button default color. Falls back to landing_page.styling.button_color if not set.",
+    "accent_text_color": "#ffffff",
+    "_accent_text_color_help": "Text color on accent-colored elements. Use #ffffff (white) or #000000 (black).",
+    "copyright": "© 2026 AmplifAI. All rights reserved.",
+    "_copyright_help": "Footer copyright line. Update year and brand name annually."
+  },
+
+  "branding": {
+    "_comment": "🎨  ========== STEP 2: FONTS & LOGO ==========",
+    "font": {
+      "_comment": "Controls the typeface used across the entire landing page.",
+      "family": "Inter",
+      "_family_help": "CSS font family name. Must exactly match the font loaded from the URL below.",
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap",
+      "_url_help": "Full Google Fonts embed URL. Set to empty string \"\" to skip loading and use system font.",
+      "fallback": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "_fallback_help": "CSS fallback stack used if Google Font fails to load. Safe to leave as-is."
+    },
+    "logo": {
+      "_comment": "Brand logo displayed in the footer. File must be in /public/ folder.",
+      "show": false,
+      "_show_help": "true = show logo | false = hide logo. Must be true AND filename must be set for logo to appear.",
+      "filename": "",
+      "_filename_help": "Logo filename inside /public/ folder. Example: my-brand-logo.png. Leave empty to hide logo.",
+      "height": "40px",
+      "_height_help": "Logo display height. Width scales automatically. Examples: 32px, 40px, 48px, 60px.",
+      "alt": "AmplifAI",
+      "_alt_help": "Logo alt text for accessibility.",
+      "link": "https://www.amplifai.it.com",
+      "_link_help": "URL the logo links to. Opens in new tab."
+    }
+  },
+
+  "landing_page": {
+    "_comment": "📄  ========== STEP 3: LANDING PAGE CONTENT & FEATURES ==========",
+    "defaults": {
+      "_comment": "Default content shown when no URL params override. URL params ALWAYS win over these values.",
+      "_priority": "Priority order: URL param > brand-config default > hardcoded fallback",
+      "_tip": "Use URL params to A/B test headlines, images, and CTAs without touching this file.",
+      "headline": "Your Ads Are Not the Problem. Your Dumb Funnel Is.",
+      "_headline_help": "⚡ REQUIRED — Main H1 headline. 40-60 characters optimal for impact. Overridden by ?hl= URL param.",
+      "subheadline": "If your funnel isn't AI-powered, it's leaking money.",
+      "_subheadline_help": "⚡ REQUIRED — Supporting text below headline. 60-120 characters optimal. Overridden by ?sh= URL param.",
+      "cta_text": "Build My AI Funnel",
+      "_cta_text_help": "⚡ REQUIRED — CTA button label. Action-oriented, 3-6 words ideal. Overridden by ?cta= URL param.",
+      "cta_destination": "https://echo-lp-dev.pages.dev/conversion-tracker.html",
+      "_cta_destination_help": "⚡ REQUIRED — Where the CTA button sends the user. TypeBot URL, Calendly link, product page, etc.",
+      "_cta_destination_example": "Examples: https://typebot.co/your-bot-name  |  https://cal.com/yourname/meeting  |  https://yourproduct.com",
+      "_cta_destination_routing": "Routing priority: 1) ?link= URL param always wins  2) debug=1 → conversion-tracker.html (internal tracking test)  3) This field  4) Falls back to conversion-tracker.html with console warning",
+      "background_image": "16_ybn.jpg",
+      "_background_image_help": "⚡ REQUIRED — Desktop hero background image filename in /public/ folder. Overridden by ?img= URL param.",
+      "background_image_mobile": "16_ybn_mobile.jpg",
+      "_background_image_mobile_help": "Mobile hero image for screens ≤768px. Convention: FILENAME_mobile.jpg. Leave empty to use desktop image on mobile.",
+      "overlay": "dark",
+      "_overlay_help": "Background overlay darkness to ensure text readability. Options: light | medium | dark | xdark. Overridden by ?overlay= URL param."
+    },
+    "styling": {
+      "_comment": "🎨  Visual styling defaults. All values can be overridden by URL params for A/B testing.",
+      "headline_size": "3rem",
+      "_headline_size_help": "Headline font size. Examples: 2.5rem (smaller), 3rem (default), 3.5rem (larger), 4rem (huge).",
+      "headline_color": "#ffffff",
+      "_headline_color_help": "Headline text color (hex). Overridden by ?hl_color= URL param.",
+      "subheadline_size": "1.25rem",
+      "_subheadline_size_help": "Subheadline font size. Default 1.25rem. Examples: 1rem, 1.1rem, 1.25rem, 1.5rem.",
+      "subheadline_color": "rgba(255,255,255,0.85)",
+      "_subheadline_color_help": "Subheadline text color. Accepts hex or rgba. Overridden by ?sh_color= URL param.",
+      "button_color": "#4F46E5",
+      "_button_color_help": "⚡ REQUIRED — CTA button background color (hex). Overridden by ?btn_color= URL param.",
+      "button_text_color": "#ffffff",
+      "_button_text_color_help": "CTA button label text color (hex). Use #ffffff or #000000.",
+      "button_size": "xlarge",
+      "_button_size_help": "CTA button size. Options: small | medium | large | xlarge. Overridden by ?btn_size= URL param.",
+      "button_style": "rounded",
+      "_button_style_help": "CTA button shape. Options: square | rounded | pill | subtle. Overridden by ?btn_style= URL param.",
+      "overlay_opacity": {
+        "_comment": "Fine-tune overlay opacity per level. Range: 0.0 (invisible) to 1.0 (solid black).",
+        "light": 0.3,
+        "medium": 0.5,
+        "dark": 0.65,
+        "xdark": 0.8
+      }
+    },
+    "features": {
+      "_comment": "⚙️  Conversion features. Each can be enabled/disabled. All support URL param overrides.",
+      "social_proof": {
+        "_comment": "Rotating social proof popup in bottom-left corner. Shows for 5 seconds, cycles every 20 seconds.",
+        "enabled": false,
+        "_enabled_help": "true = show popup | false = hide. Overridden by ?social_proof=on URL param.",
+        "variants": [
+          { "emoji": "👩‍💼", "name": "Sarah M.", "text": "Advertiser in eCom just activated an AI funnel", "time": "2 minutes ago" },
+          { "emoji": "👨‍💻", "name": "James K.", "text": "Media buyer just cut CPL by 40% with AmplifAI", "time": "5 minutes ago" },
+          { "emoji": "🧑‍🚀", "name": "David T.", "text": "Agency owner just booked an AI funnel build session", "time": "8 minutes ago" },
+          { "emoji": "👩‍🎓", "name": "Maria R.", "text": "Performance marketer just went live with first AI campaign", "time": "12 minutes ago" },
+          { "emoji": "🧑‍💼", "name": "Alex W.", "text": "Brand just activated autonomous ad optimization", "time": "3 minutes ago" }
+        ],
+        "_variants_help": "Popup messages. System picks one randomly each cycle. Customize names/text to match your brand voice.",
+        "default_text": "",
+        "_default_text_help": "Set a single message here to override all variants. Leave empty to rotate through variants array."
+      },
+      "scarcity": {
+        "_comment": "⚡ Urgency bar fixed to the bottom of the page.",
+        "enabled": false,
+        "_enabled_help": "true = show scarcity bar | false = hide. Overridden by ?scarcity=N URL param (N = number of spots).",
+        "default_spots": 3,
+        "_default_spots_help": "Number of spots shown. Replaces {N} in the message text below.",
+        "default_text": "Only {N} AI funnel builds accepted this month",
+        "_default_text_help": "{N} is auto-replaced with default_spots. Overridden by ?scarcity_text= URL param."
+      },
+      "micro_yes": {
+        "_comment": "Commitment checkbox shown above CTA. Dims the CTA button until checked — signals intent.",
+        "enabled": false,
+        "_enabled_help": "true = show checkbox | false = hide. Overridden by ?micro_yes=on URL param.",
+        "default_text": "Yes, I'm done leaking money on static funnels",
+        "_default_text_help": "Checkbox label. First-person, positive framing works best. Overridden by ?micro_text= URL param."
+      },
+      "progress": {
+        "_comment": "Step progress indicator shown above the headline (e.g. 'Step 1 of 3').",
+        "enabled": false,
+        "_enabled_help": "true = show progress indicator | false = hide. Overridden by ?progress=1 URL param.",
+        "total_steps": 3,
+        "_total_steps_help": "Total steps shown. Displays as 'Step 1 of N'."
+      },
+      "legal_consent": {
+        "_comment": "Legal disclaimer below CTA. Privacy Policy and Terms of Service links are auto-injected from footer.links.",
+        "enabled": true,
+        "_enabled_help": "true = always show consent text | false = hide (not recommended — legal risk).",
+        "text": "By clicking any button on this page you acknowledge that you are a human visitor and agree to our use of cookies for marketing attribution, personalized advertising, and analytics. You consent to receive marketing communications and agree that any disputes will be resolved through binding arbitration. See our Privacy Policy and Terms of Service for details.",
+        "_text_help": "Consent copy. 'Privacy Policy' and 'Terms of Service' are automatically converted to clickable links using footer.links URLs below."
+      }
+    }
+  },
+
+  "footer": {
+    "_comment": "🔗  ========== STEP 4: FOOTER ==========",
+    "enabled": true,
+    "_enabled_help": "true = show footer | false = hide (not recommended — legal risk).",
+    "logo": {
+      "show": false,
+      "_show_help": "true = show brand logo in footer | false = hide. Logo file set in branding.logo.filename above."
+    },
+    "social_links": {
+      "_comment": "Social icons appear only if enabled = true AND url is not empty.",
+      "facebook":  { "enabled": true, "url": "https://facebook.com" },
+      "instagram": { "enabled": true, "url": "https://instagram.com" },
+      "twitter":   { "enabled": true, "url": "https://x.com" },
+      "linkedin":  { "enabled": true, "url": "https://www.linkedin.com" },
+      "youtube":   { "enabled": true, "url": "https://www.youtube.com/" },
+      "tiktok":    { "enabled": true, "url": "https://tiktok.com" }
+    },
+    "links": {
+      "_comment": "⚡ REQUIRED — Footer legal links. Fill in your actual URLs.",
+      "privacy":  { "enabled": true,  "text": "Privacy Policy",   "url": "/privacy" },
+      "terms":    { "enabled": true,  "text": "Terms of Service", "url": "/terms" },
+      "cookies":  { "enabled": true,  "text": "Cookie Policy",    "url": "/cookies" },
+      "contact":  { "enabled": true,  "text": "Contact",          "url": "/contact" }
+    }
+  },
+
+  "conversion_values": {
+    "_comment": "💰  ========== STEP 5: ADKERNEL CONVERSION VALUES ==========",
+    "_instructions": "Dollar values passed to AdKernel at each funnel step. AdKernel uses these to optimize bids toward your highest-value actions. Set proportional to lead quality at each step.",
+    "step_1": "0.01",
+    "_step_1_help": "Value at LP click (echo_cta_click / step_1). Visitor showed intent. Default: $0.01.",
+    "step_2": "0.05",
+    "_step_2_help": "Value at lead capture / form submit (lead_conversion / step_2). Qualified lead. Default: $0.05.",
+    "step_3": 1.00,
+    "_step_3_help": "⚡ REQUIRED — Value at main conversion / thank-you page (thankyou_conversion / step_3). Set to your actual lead value. Example: 10.00"
+  },
+
+  "conversion_tracker": {
+    "_comment": "⚙️  ========== STEP 6: CONVERSION TRACKER PAGE (Step 2) ==========",
+    "_instructions": "The conversion-tracker.html page fires between LP click and thank-you. Captures lead data, fires postbacks, and can embed a survey.",
+    "redirect_delay": 3000,
+    "_redirect_delay_help": "Milliseconds before auto-redirect to thank-you page. 3000 = 3 seconds. Min: 1000.",
+    "progress_animation": true,
+    "_progress_animation_help": "true = show animated progress bar during redirect countdown.",
+    "fallback_link_delay": 10000,
+    "_fallback_link_delay_help": "Milliseconds before showing a manual 'click here' fallback link if redirect fails. 10000 = 10 seconds.",
+    "splitTest": {
+      "_comment": "A/B split test destination URLs after the tracker. All variant weights must sum to 100.",
+      "enabled": false,
+      "_enabled_help": "true = randomly route traffic per weights | false = always use first variant.",
+      "variants": [
+        {
+          "name": "control",
+          "_name_help": "Variant label for reporting.",
+          "url": "thank-you.html",
+          "_url_help": "⚡ REQUIRED if splitTest enabled — destination URL for this variant.",
+          "weight": 100,
+          "enabled": true
+        }
+      ]
+    },
+    "survey": {
+      "_comment": "Embed a survey on the conversion tracker page to qualify leads.",
+      "type": "formbricks",
+      "_type_help": "Survey provider. Options: formbricks | typebot | (leave empty for no survey)",
+      "formbricks_id": "",
+      "_formbricks_id_help": "FormBricks survey ID (if type = formbricks).",
+      "typebot_id": "",
+      "_typebot_id_help": "TypeBot bot ID (if type = typebot)."
+    },
+    "survey_data": {
+      "_comment": "Survey answer field labels for remarketing.",
+      "_instructions": "Set the label for each question answer you collect.",
+      "q1_label": "budget_range",
+      "q2_label": "monthly_adspend",
+      "q3_label": "primary_platform",
+      "q4_label": "team_size",
+      "q5_label": "biggest_challenge",
+      "q6_label": "current_solution",
+      "q7_label": "decision_timeline",
+      "q8_label": "role",
+      "q9_label": "industry",
+      "q10_label": "referral_source"
+    },
+    "dspPostback": {
+      "enabled": true,
+      "_enabled_help": "true = fire AdKernel dsp_postback events | false = suppress all DSP postbacks.",
+      "_campaign_id_note": "Campaign ID is passed dynamically via ?campaign= URL param and read from the dataLayer by GTM. Never hardcoded here."
+    },
+    "webhookThresholds": {
+      "_comment": "APS score thresholds that trigger automated follow-up actions.",
+      "_aps_scale": "0-20: Low intent | 21-40: Mild interest | 41-60: Engaged | 61-80: High intent | 81-100: Very high intent",
+      "ai_call_min_aps": 70,
+      "sms_min_aps": 50,
+      "email_min_aps": 30
+    },
+    "webhooks": {
+      "_comment": "n8n or automation endpoints triggered when APS thresholds are met. Leave url empty to disable.",
+      "ai_call": { "enabled": false, "url": "" },
+      "sms":     { "enabled": false, "url": "" },
+      "email":   { "enabled": false, "url": "" }
+    }
+  },
+
+  "thank_you_page": {
+    "_comment": "🎉  ========== STEP 7: THANK YOU PAGE (Step 3) ==========",
+    "_instructions": "Content shown after conversion.",
+    "default_type": "booking",
+    "_default_type_help": "Options: booking | lead | sale",
+    "conversion_types": {
+      "_comment": "Content variants for different conversion scenarios.",
+      "booking": {
+        "headline": "You're Booked! 🎉",
+        "subheadline": "Check your email for confirmation details",
+        "show_calendly": false,
+        "calendly_url": ""
+      },
+      "lead": {
+        "headline": "Thank You! We'll Be In Touch",
+        "subheadline": "Expect to hear from us within 72 hours",
+        "show_calendly": false,
+        "calendly_url": ""
+      },
+      "sale": {
+        "headline": "Purchase Complete! 🎉",
+        "subheadline": "Check your email for your order confirmation",
+        "show_calendly": false,
+        "calendly_url": ""
+      }
+    },
+    "continue_button": {
+      "_comment": "Optional continue button shown on the thank-you page.",
+      "enabled": true,
+      "text": "Continue",
+      "url": "",
+      "style": "primary"
+    },
+    "splitTest": {
+      "enabled": false,
+      "variants": [
+        { "name": "control", "url": "", "weight": 100, "enabled": true }
+      ]
+    },
+    "redirect": {
+      "enabled": false,
+      "url": "",
+      "delay_seconds": 3
+    }
+  },
+
+  "tracking": {
+    "_comment": "📊  ========== STEP 8: TRACKING & APS ENGINE ==========",
+    "cookie_expiry_days": 365,
+    "_cookie_expiry_help": "How long all tracking cookies persist in days.",
+    "debug_mode": false,
+    "_debug_mode_help": "true = enable console debug logging. ALWAYS false in production.",
+    "cookies": {
+      "_comment": "Advanced cookie settings. Safe to leave as-is.",
+      "domain": "auto",
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    "retargeting": {
+      "_comment": "Controls retargeting pixel firing.",
+      "enabled": true,
+      "_enabled_help": "true = fire all retargeting events | false = suppress all. ?ret=y / ?ret=n overrides per-visit.",
+      "_param_values": "ret=y (force on) | ret=n (force off)"
+    },
+    "aps": {
+      "_comment": "🧠  APS (Actual Predictive Score) Engine — real-time behavioral engagement scoring.",
+      "_how_it_works": "APS starts at visitor EPS. Behavioral signals add bonus points. Final APS (0-100) drives webhooks, bid signals, and lead quality segmentation.",
+      "_tip": "These defaults are well-tuned. Only change if you have specific optimization data.",
+      "scroll_depth": {
+        "threshold_percent": 75,
+        "bonus": 5
+      },
+      "time_on_page": {
+        "threshold_seconds": 30,
+        "bonus": 10,
+        "per_second": 0.1,
+        "max_bonus": 20
+      },
+      "mouse_movements": {
+        "per_movement": 0.05,
+        "max_bonus": 10
+      },
+      "cta_hover": {
+        "bonus_per_hover": 5,
+        "max_bonus": 15
+      },
+      "cta_click": { "bonus": 15 },
+      "micro_yes": { "bonus": 10 },
+      "email_entry": { "bonus": 15 },
+      "phone_entry": { "bonus": 25 },
+      "answer_survey": {
+        "bonus_per_answer": 5,
+        "max_bonus": 25
+      },
+      "quality_tiers": {
+        "_comment": "APS threshold boundaries for quality tier segmentation. Used by GTM trigger filters and DSP bid multipliers.",
+        "high": 80,
+        "med_high": 65,
+        "medium": 50,
+        "med_low": 35,
+        "_help": "high=APS≥80 | med_high=65-79 | medium=50-64 | med_low=35-49 | low=<35"
+      }
+    },
+    "adkernel": {
+      "_comment": "AdKernel account-level identifiers. Set at brand onboarding.",
+      "account_id": "",
+      "_account_id_help": "⚡ REQUIRED — AdKernel account ID. Auto-fires universalPixel?account={{id}} on all funnel pages.",
+      "device_lists": {
+        "converted_blocklist_id": "",
+        "_converted_blocklist_id_help": "AdKernel Device Identifiers list ID. Converted users added here to suppress prospecting retargeting."
+      },
+      "eid_lists": {
+        "leads_list_id": "",
+        "_leads_list_id_help": "AdKernel Extended User List ID. Captured leads added for CRM-matched retargeting."
+      }
+    }
+  },
+
+  "archetypes": {
+    "_comment": "👥  ========== ARCHETYPES: Audience Persona Slots ==========",
+    "_help": "Each slot maps to a ?at= URL param value (1-5). GTM reads {{DLV - at}} to route to the correct CJ pixel.",
+    "slot_1": { "name": "", "angle": "" },
+    "slot_2": { "name": "", "angle": "" },
+    "slot_3": { "name": "", "angle": "" },
+    "slot_4": { "name": "", "angle": "" },
+    "slot_5": { "name": "", "angle": "" }
+  },
+
+  "angles": {
+    "_comment": "🎯  ========== ANGLES: Message Angle Slots ==========",
+    "_help": "Angle definitions referenced by archetypes. Maps to ?angle= URL param.",
+    "slot_1": { "name": "" },
+    "slot_2": { "name": "" },
+    "slot_3": { "name": "" },
+    "slot_4": { "name": "" },
+    "slot_5": { "name": "" }
+  },
+
+  "dsp_segments": {
+    "_comment": "📡  ========== DSP SEGMENT CONFIGURATION ==========",
+    "recency_days": {
+      "_comment": "How many days each audience segment stays active after pixel fire.",
+      "lp_viewer": 14,
+      "cta_click": 21,
+      "lead": 60,
+      "converted": 90,
+      "archetype": 30,
+      "quality_tier": 45
+    },
+    "quality_bid_multipliers": {
+      "_comment": "CPM bid multipliers per APS quality tier. Higher = DSP bids more for those users.",
+      "platinum": 3.0,
+      "gold": 2.0,
+      "silver": 1.5,
+      "bronze": 1.0
+    },
+    "exclusion_rules": {
+      "_comment": "Prevents converted/qualified users from being retargeted on wrong campaigns.",
+      "converted_excludes_prospecting": true,
+      "lead_excludes_step0_campaign": true
+    }
+  },
+
+  "retargeting_campaigns": {
+    "_comment": "🔄  ========== RETARGETING CAMPAIGN REGISTRY ==========",
+    "_instructions": "AI monitors segment counts via AdKernel API. When a segment crosses activation_threshold, AI creates the campaign, writes campaign_id back here, and sets status to active.",
+    "activation_threshold": 1000,
+    "_activation_threshold_help": "Minimum audience size before a retargeting campaign activates. 1000 users required.",
+    "customer_journey": {
+      "step_0": {
+        "_comment": "LP Viewers — widest audience, lowest CPM floor",
+        "campaign_id": "", "cpm_floor": 0.5, "status": "pending",
+        "creative_strategy": ["awareness", "brand_recall", "re-engagement"]
+      },
+      "step_1": {
+        "_comment": "CTA Clickers — showed intent, did not convert",
+        "campaign_id": "", "cpm_floor": 1.0, "status": "pending",
+        "creative_strategy": ["objection_handling", "social_proof", "urgency"]
+      },
+      "step_2": {
+        "_comment": "Leads — form submitted, did not reach thank-you",
+        "campaign_id": "", "cpm_floor": 3.0, "status": "pending",
+        "creative_strategy": ["close", "offer_stack", "scarcity"]
+      },
+      "step_3_ltv": {
+        "_comment": "Converters — LTV expansion campaigns",
+        "campaign_id": "", "cpm_floor": 5.0, "status": "pending",
+        "creative_strategy": ["upsell", "referral", "loyalty"]
+      }
+    }
+  },
+
+  "dsp_pixels": {
+    "_comment": "🔵  ========== DSP PIXEL URL REGISTRY ==========",
+    "_instructions": "Pixel URLs for the 27 placeholder DSP tags. GTM reads these as brand-config values. Leave empty until AdKernel campaigns are created — GTM tags will fire but return 200 on empty.",
+    "survey_quality": {
+      "_comment": "3 survey quality segment pixels",
+      "high": "", "medium": "", "low": ""
+    },
+    "aps_quality": {
+      "_comment": "15 pixels: 3 funnel steps × 5 APS tiers",
+      "step_1_high": "", "step_1_med_high": "", "step_1_medium": "", "step_1_med_low": "", "step_1_low": "",
+      "step_2_high": "", "step_2_med_high": "", "step_2_medium": "", "step_2_med_low": "", "step_2_low": "",
+      "step_3_high": "", "step_3_med_high": "", "step_3_medium": "", "step_3_med_low": "", "step_3_low": ""
+    },
+    "lp_micro": {
+      "_comment": "10 LP micro-behavioral segment pixels",
+      "time_quick": "", "time_considered": "", "time_deliberate": "", "time_impulsive": "",
+      "cta_confident": "", "cta_med_hesitation": "", "cta_high_hesitation": "",
+      "engaged": "", "passive": "", "highly_engaged": ""
+    },
+    "master_quality": {
+      "_comment": "4 master quality composite segment pixels",
+      "platinum": "", "gold": "", "silver": "", "bronze": ""
+    }
+  }
+}

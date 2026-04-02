@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title id="page-title">Loading...</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Font loaded from brand-config (injected dynamically) -->
+  <link id="brand-font-link" rel="stylesheet" href="">
+
+  <style>
+    /* ============================================================
+       ECHO LP v2.3 - GLOBAL RESET & BASE
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: var(--brand-font, 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============================================================
+       CSS VARIABLES - Populated from brand-config
+    ============================================================ */
+    :root {
+      --brand-font: 'Inter', system-ui, sans-serif;
+      --btn-color: #2563eb;
+      --btn-text: #ffffff;
+      --overlay-opacity: 0.65;
+      --hero-img: url('');
+    }
+
+    /* ============================================================
+       BACKGROUND HERO IMAGE
+    ============================================================ */
+    #hero-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    #hero-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, var(--overlay-opacity));
+      z-index: 1;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    #page-wrapper {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 20px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ============================================================
+       SCARCITY BAR
+    ============================================================ */
+    #scarcity {
+      display: none;
+      background: linear-gradient(90deg, #dc2626, #b91c1c);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      text-align: center;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 1000;
+      animation: scarcityPulse 2s ease-in-out infinite;
+    }
+
+    #scarcity.active {
+      display: block;
+    }
+
+    @keyframes scarcityPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    /* ============================================================
+       PROGRESS INDICATOR
+    ============================================================ */
+    #progress-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    #progress-indicator.active {
+      display: flex;
+    }
+
+    .progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.current {
+      background: var(--btn-color);
+      width: 10px;
+      height: 10px;
+      box-shadow: 0 0 8px var(--btn-color);
+    }
+
+    .progress-dot.done {
+      background: rgba(255,255,255,0.6);
+    }
+
+    /* ============================================================
+       HEADLINE & SUBHEADLINE
+    ============================================================ */
+    #headline {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.12;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    #subheadline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.85);
+      text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+      margin-bottom: 36px;
+      max-width: 640px;
+    }
+
+    /* ============================================================
+       MICRO-YES CHECKBOX (Commitment Trigger)
+    ============================================================ */
+    #micro-yes-container {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      cursor: pointer;
+      max-width: 560px;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    #micro-yes-container.active {
+      display: flex;
+    }
+
+    #micro-yes-container:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    #micro-yes-checkbox {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border-radius: 6px;
+      border: 2px solid rgba(255,255,255,0.5);
+      background: transparent;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      position: relative;
+      transition: all 0.2s;
+      margin-top: 1px;
+    }
+
+    #micro-yes-checkbox:checked {
+      background: var(--btn-color);
+      border-color: var(--btn-color);
+    }
+
+    #micro-yes-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    #micro-yes-label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       CTA BUTTON
+    ============================================================ */
+    #cta-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    #cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--btn-color);
+      color: var(--btn-text, #ffffff);
+      text-decoration: none;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 0 var(--btn-color);
+      animation: ctaPulse 3s ease-in-out infinite;
+    }
+
+    /* Button sizes */
+    #cta-button.size-small   { padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; }
+    #cta-button.size-medium  { padding: 16px 36px; font-size: 1.05rem; border-radius: 10px; }
+    #cta-button.size-large   { padding: 20px 44px; font-size: 1.15rem; border-radius: 12px; }
+    #cta-button.size-xlarge  { padding: 22px 52px; font-size: 1.25rem; border-radius: 14px; }
+
+    /* Button styles */
+    #cta-button.style-square  { border-radius: 4px !important; }
+    #cta-button.style-rounded { /* default */ }
+    #cta-button.style-pill    { border-radius: 100px !important; }
+    #cta-button.style-subtle  { box-shadow: none; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.6); }
+
+    #cta-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 6px rgba(255,255,255,0.08);
+      filter: brightness(1.1);
+    }
+
+    #cta-button:active {
+      transform: translateY(0) scale(0.99);
+    }
+
+    #cta-button.dimmed {
+      opacity: 0.45;
+      pointer-events: none;
+      animation: none;
+    }
+
+    #cta-button .btn-arrow {
+      font-size: 1.2em;
+      transition: transform 0.2s;
+    }
+
+    #cta-button:hover .btn-arrow {
+      transform: translateX(4px);
+    }
+
+    @keyframes ctaPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 0 var(--btn-color); }
+      50% { box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 8px rgba(37,99,235,0); }
+    }
+
+    /* Button shimmer effect */
+    #cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.5s ease;
+    }
+
+    #cta-button:hover::before {
+      left: 100%;
+    }
+
+    /* ============================================================
+       LEGAL CONSENT TEXT
+    ============================================================ */
+    #legal-consent {
+      font-size: 9px;
+      color: rgba(255,255,255,0.40);
+      line-height: 1.5;
+      max-width: 480px;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    #legal-consent a {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    /* ============================================================
+       SOCIAL PROOF POPUP
+    ============================================================ */
+    #social-proof {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 20px;
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px 18px;
+      max-width: 300px;
+      z-index: 900;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      animation: slideInSP 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    #social-proof.active {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    @keyframes slideInSP {
+      from { transform: translateX(-120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .sp-avatar {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--btn-color), #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .sp-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sp-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sp-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.4;
+    }
+
+    .sp-time {
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    #page-footer {
+      position: relative;
+      z-index: 2;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    #footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    #footer-logo-wrap {
+      margin-bottom: 16px;
+    }
+
+    #footer-logo-wrap img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.85;
+    }
+
+    #footer-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .social-icon:hover {
+      color: rgba(255,255,255,1);
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .social-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    #footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    #footer-links a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      font-size: 11px;
+      transition: color 0.2s;
+    }
+
+    #footer-links a:hover {
+      color: rgba(255,255,255,0.8);
+    }
+
+    #footer-links .sep {
+      color: rgba(255,255,255,0.2);
+      font-size: 11px;
+    }
+
+    #footer-copyright {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ============================================================
+       DEBUG PANEL
+    ============================================================ */
+    #debug-panel {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.92);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 11px;
+      color: #4ade80;
+      font-family: 'Courier New', monospace;
+      z-index: 9999;
+      max-width: 320px;
+      max-height: 500px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    #debug-panel.active {
+      display: block;
+    }
+
+    #debug-panel .debug-title {
+      color: #facc15;
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 6px;
+    }
+
+    #debug-aps {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.85);
+      border: 1px solid rgba(255,200,0,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #facc15;
+      font-family: monospace;
+      z-index: 9998;
+    }
+
+    #debug-aps.active {
+      display: block;
+    }
+
+    /* ============================================================
+       MOBILE RESPONSIVE
+    ============================================================ */
+    @media (max-width: 640px) {
+      #main-content {
+        padding: 60px 16px 20px;
+        justify-content: flex-start;
+        padding-top: 80px;
+      }
+
+      #headline {
+        font-size: 1.9rem;
+      }
+
+      #subheadline {
+        font-size: 1rem;
+      }
+
+      #cta-button.size-xlarge {
+        padding: 20px 36px;
+        font-size: 1.1rem;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      #social-proof {
+        bottom: 70px;
+        left: 12px;
+        right: 12px;
+        max-width: none;
+      }
+
+      #footer-social {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #headline {
+        font-size: 1.6rem;
+      }
+
+      #cta-button.size-xlarge {
+        padding: 18px 28px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Scarcity bar pushes content down */
+    body.has-scarcity #main-content {
+      padding-top: 80px;
+    }
+
+    /* Loading state */
+    body.loading #main-content {
+      opacity: 0;
+    }
+
+    body.ready #main-content {
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+  </style>
+</head>
+<body class="loading">
+
+  <!-- BACKGROUND LAYERS -->
+  <div id="hero-bg" role="presentation"></div>
+  <div id="hero-overlay" role="presentation"></div>
+
+  <!-- SCARCITY BAR (fixed top, shown if scarcity param) -->
+  <div id="scarcity" role="alert" aria-live="polite"
+       data-default="Only {N} spots remaining today"></div>
+
+  <!-- SOCIAL PROOF POPUP -->
+  <div id="social-proof" role="status" aria-live="polite">
+    <div class="sp-avatar" id="sp-avatar">👤</div>
+    <div class="sp-content">
+      <div class="sp-name" id="sp-name">Sarah M.</div>
+      <div class="sp-text" id="sp-text">Just registered from New York</div>
+      <div class="sp-time" id="sp-time">2 minutes ago</div>
+    </div>
+  </div>
+
+  <!-- MAIN PAGE WRAPPER -->
+  <div id="page-wrapper">
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+
+      <!-- PROGRESS INDICATOR -->
+      <div id="progress-indicator" role="progressbar" aria-valuetext="Step 1 of 3">
+        <div class="progress-dot current" title="Step 1: Learn"></div>
+        <div class="progress-dot" title="Step 2: Qualify"></div>
+        <div class="progress-dot" title="Step 3: Book"></div>
+        <span id="progress-text">Step 1 of 3</span>
+      </div>
+
+      <!-- HEADLINE -->
+      <h1 id="headline">Transform Your Business Today</h1>
+
+      <!-- SUBHEADLINE -->
+      <p id="subheadline">Join thousands of entrepreneurs who've unlocked consistent, scalable growth</p>
+
+      <!-- MICRO-YES COMMITMENT TRIGGER -->
+      <div id="micro-yes-container" role="group">
+        <input type="checkbox" id="micro-yes-checkbox" name="micro-yes" aria-label="Commitment checkbox">
+        <label for="micro-yes-checkbox" id="micro-yes-label">
+          Yes, I want to transform my business and achieve consistent results
+        </label>
+      </div>
+
+      <!-- CTA WRAPPER -->
+      <div id="cta-wrapper">
+        <a id="cta-button" href="#" role="button"
+           class="size-xlarge style-rounded"
+           aria-label="Get Started Now">
+          <span id="cta-text">Get Started Now</span>
+          <span class="btn-arrow">→</span>
+        </a>
+
+        <!-- LEGAL CONSENT TEXT (9px, barely visible, legally required) -->
+        <p id="legal-consent"></p>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="page-footer">
+      <div id="footer-inner">
+
+        <!-- Footer Logo -->
+        <div id="footer-logo-wrap" style="display:none;">
+          <a id="footer-logo-link" href="#" target="_blank" rel="noopener">
+            <img id="footer-logo-img" src="" alt="Brand Logo">
+          </a>
+        </div>
+
+        <!-- Social Icons -->
+        <div id="footer-social" style="display:none;">
+          <!-- Icons injected by JS from brand-config -->
+        </div>
+
+        <!-- Footer Links -->
+        <nav id="footer-links" aria-label="Footer links">
+          <!-- Links injected by JS from brand-config -->
+        </nav>
+
+        <!-- Copyright -->
+        <p id="footer-copyright"></p>
+
+      </div>
+    </footer>
+
+  </div><!-- /#page-wrapper -->
+
+  <!-- DEBUG PANEL -->
+  <div id="debug-panel">
+    <div class="debug-title">🔍 ECHO LP v2.3 DEBUG</div>
+    <div id="debug-content"></div>
+  </div>
+
+  <div id="debug-aps">
+    APS: <span id="debug-aps-value">0</span> | EPS: <span id="debug-eps-value">0</span>
+  </div>
+
+  <!-- ============================================================
+       ECHO LP v2.3 — CORE JAVASCRIPT
+  ============================================================ -->
+  <script>
+  (function() {
+    'use strict';
+
+    /* ===========================================================
+       1. UTILITY: COOKIES
+    =========================================================== */
+    function setCookie(name, value, days) {
+      if (value === null || value === undefined || value === '') return;
+      days = days || 365;
+      var expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + '=' + encodeURIComponent(String(value))
+        + '; expires=' + expires.toUTCString()
+        + '; path=/; SameSite=Lax';
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + '=';
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(c.substring(nameEQ.length));
+        }
+      }
+      return '';
+    }
+
+    /* ===========================================================
+       2. UTILITY: URL PARAMS
+    =========================================================== */
+    var urlParams = (function() {
+      var params = {};
+      var search = window.location.search.substring(1);
+      var pairs = search.split('&');
+      for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        if (pair[0]) {
+          params[decodeURIComponent(pair[0])] = pair[1]
+            ? decodeURIComponent(pair[1].replace(/\+/g, ' '))
+            : '';
+        }
+      }
+      return params;
+    })();
+
+    function getParam(primaryName, aliases) {
+      // Try URL first
+      if (urlParams[primaryName]) return urlParams[primaryName];
+      // Try aliases in URL
+      if (aliases) {
+        for (var i = 0; i < aliases.length; i++) {
+          if (urlParams[aliases[i]]) return urlParams[aliases[i]];
+        }
+      }
+      // Try cookie
+      var cookieVal = getCookie(primaryName);
+      if (cookieVal) return cookieVal;
+      return '';
+    }
+
+    /* ===========================================================
+       3. CONFIG LOADER
+    =========================================================== */
+    var brandConfig = {};
+
+    function deepGet(obj, path, fallback) {
+      try {
+        return path.reduce(function(o, k) { return o[k]; }, obj) || fallback;
+      } catch(e) {
+        return fallback;
+      }
+    }
+
+    /* ===========================================================
+       4. PARAMETER COLLECTION - ALL 350+ PARAMS
+    =========================================================== */
+
+    // CATEGORY 1: AdKernel Core (primary names, accept aliases)
+    var conversion = getParam('conversion', ['trck', 'click_id', 'cid']);
+    var campaign   = getParam('campaign',   ['campaign_id']);
+    var banner     = getParam('banner',     ['creative_id', 'banner_id']);
+    var publisher  = getParam('publisher',  ['publisher_id']);
+    var offer      = getParam('offer',      ['offer_id']);
+    var goal_id    = getParam('goal_id',    []);  // goal_id in GTM only, but store if present
+
+    // CATEGORY 2: AdKernel Native
+    var pubzone              = getParam('pubzone', []);
+    var country_name         = getParam('country_name', []);
+    var region               = getParam('region', []);
+    var city                 = getParam('city', []);
+    var device_type          = getParam('device_type', []);
+    var os                   = getParam('os', []);
+    var browser_param        = getParam('browser', []);
+    var Keyword              = getParam('Keyword', ['keyword']); // Note: capital K
+    var bid                  = getParam('bid', []);
+    var date_param           = getParam('date', []);
+    var day_of_month         = getParam('day_of_month', []);
+    var day_of_week          = getParam('day_of_week', []);
+    var device_brand         = getParam('device_brand', []);
+    var device_model         = getParam('device_model', []);
+    var request_id           = getParam('request_id', []);
+    var month_param          = getParam('month', []);
+    var original_subid       = getParam('original_subid', []);
+    var os_type              = getParam('os_type', []);
+    var postback_id          = getParam('postback_id', []);
+    var app_bundle           = getParam('app_bundle', []);
+    var app_id               = getParam('app_id', []);
+    var pubfeed              = getParam('pubfeed', []);
+    var subid                = getParam('subid', []);
+    var payout               = getParam('payout', []);
+    var pubpoint             = getParam('pubpoint', []);
+    var Query                = getParam('Query', ['query']); // Note: capital Q
+    var site_id              = getParam('site_id', []);
+    var referrer_domain      = getParam('referrer_domain', []);
+    var remfeed              = getParam('remfeed', []);
+    var ga_param             = getParam('ga', []);
+    var search_referrer      = getParam('search_referrer_domain', []);
+    var search_ip            = getParam('search_ip', []);
+    var source_subid         = getParam('source_subid', []);
+    var State_Name           = getParam('State_Name', ['state_name']); // Note: capitals
+    var source               = getParam('source', []);
+    var ip                   = getParam('ip', []);
+    var carrier              = getParam('carrier', []);
+    var zip                  = getParam('zip', []);
+    var state                = getParam('state', []);
+    var country              = getParam('country', []);
+
+    // CATEGORY 3: Keitaro Routing
+    var sub1  = getParam('sub1',  ['sub_id_1']);
+    var sub2  = getParam('sub2',  ['sub_id_2']);
+    var sub3  = getParam('sub3',  ['sub_id_3']);
+    var sub4  = getParam('sub4',  ['sub_id_4']);
+    var sub5  = getParam('sub5',  ['sub_id_5']);
+    var sub6  = getParam('sub6',  ['sub_id_6']);
+    var sub7  = getParam('sub7',  ['sub_id_7']);
+    var sub8  = getParam('sub8',  ['sub_id_8']);
+    var sub9  = getParam('sub9',  ['sub_id_9']);
+    var sub10 = getParam('sub10', ['sub_id_10']);
+    var _lp   = getParam('_lp',  []);
+    var _offer_id = getParam('_offer_id', []);
+
+    // CATEGORY 4: Creative DNA - Static Ads (Meta)
+    var ad_variation      = getParam('av', ['ad_variation']);
+    var media_buyer       = getParam('mb', ['media_buyer']);
+    var interruptor_image = getParam('ii', ['interruptor_image']);
+    var image_hero        = getParam('ih', ['image_hero']);
+    var image_callouts    = getParam('ic', ['image_callouts']);
+    var body_copy         = getParam('bc', ['body_copy']);
+    var image_offer       = getParam('io', ['image_offer']);
+    var cta_type          = getParam('ct', ['cta_type']);
+    var image_narrative   = getParam('in', ['image_narrative']);
+    var solution_emphasis = getParam('se', ['solution_emphasis']);
+    var visual_element    = getParam('ve', ['visual_element']);
+    var unquestionable_proof = getParam('up', ['unquestionable_proof']);
+    var problem_statement = getParam('ps', ['problem_statement']);
+    var curiosity_angle   = getParam('ca', ['curiosity_angle']);
+    var wow_factor        = getParam('wf', ['wow_factor']);
+    var text_overlays     = getParam('to', ['text_overlays']);
+    var social_proof_type = getParam('sp', ['social_proof_type']);
+    var headline_approach = getParam('hl_approach', []);
+    var audience_targeting = getParam('at_targeting', []);
+    var tracking_url      = getParam('tu', ['tracking_url']);
+
+    // CATEGORY 5: Creative DNA - Video Ads
+    var skip_stopper      = getParam('ss', ['skip_stopper']);
+    var hook_type         = getParam('ht', ['hook_type']);
+    var main_pain_point   = getParam('mpp', ['main_pain_point']);
+    var irresistible_offer = getParam('irr_offer', []);
+    var narrative_tone    = getParam('nts', ['narrative_tone']);
+    var voiceover_style   = getParam('vs', ['voiceover_style']);
+    var proof_type        = getParam('pt', ['proof_type']);
+    var background_music  = getParam('bm', ['background_music']);
+    var transition_style  = getParam('ts', ['transition_style']);
+    var graphics_text     = getParam('gtu', ['graphics_text']);
+    var video_length      = getParam('vl', ['video_length']);
+    var thumbnail_style   = getParam('ths', ['thumbnail_style']);
+    var call_pattern      = getParam('cp', ['call_pattern']);
+
+    // CATEGORY 6: Echo LP Personalization (27 params)
+    var hl         = getParam('hl', ['headline']);
+    var sh         = getParam('sh', ['subheadline']);
+    var cta        = getParam('cta', ['cta_text']);
+    var img        = getParam('img', ['image', 'bg']);
+    var btn_color  = getParam('btn_color', ['button_color']);
+    var btn_size   = getParam('btn_size', ['button_size']);
+    var btn_style  = getParam('btn_style', ['button_style']);
+    var overlay    = getParam('overlay', []);
+    var font_param = getParam('font', []);
+    var social_proof_param = getParam('social_proof', []);
+    var social_text = getParam('social_text', []);
+    var scarcity   = getParam('scarcity', []);
+    var scarcity_text = getParam('scarcity_text', []);
+    var micro_yes  = getParam('micro_yes', ['microyes']);
+    var micro_text = getParam('micro_text', ['microtext']);
+    var progress   = getParam('progress', []);
+    var test_all   = getParam('test_all', ['testall']);
+    var debug      = getParam('debug', []);
+    var ad         = getParam('ad', []);           // P1_AT2_AG3_V007 format
+    var at         = getParam('at', ['archetype']); // archetype 1-5
+    var ag         = getParam('ag', ['angle']);      // angle 1-5
+    var archetype  = getParam('archetype', ['at']);
+    var angle      = getParam('angle', ['ag']);
+    var phase      = getParam('phase', []);
+    var av         = getParam('av', ['ad_variation']);
+    var mb         = getParam('mb', ['media_buyer']);
+    var eps_score  = getParam('eps_score', ['eps', 'eps_initial']);
+    var aps_score  = parseFloat(eps_score) || 0; // APS starts at EPS, updated by behavior
+
+    // Normalize archetype/angle (accept both formats)
+    archetype = archetype || at;
+    angle = angle || ag;
+
+    // CATEGORY 10: Avalanche Fixed Tokens
+    // (already captured above as at, ag, ad, phase, goal_id, av, mb, eps_score)
+
+    // Categories 11-27: Additional Avalanche Intelligence params
+    var intent_signal    = getParam('intent', ['intent_signal']);
+    var urgency_level    = getParam('urgency', ['urgency_level']);
+    var objection_type   = getParam('objection', ['objection_type']);
+    var desire_outcome   = getParam('desire', ['desire_outcome']);
+    var pain_level       = getParam('pain', ['pain_level']);
+    var sophistication   = getParam('soph', ['sophistication']);
+    var awareness_level  = getParam('aware', ['awareness_level']);
+    var price_sensitivity = getParam('price_sens', ['price_sensitivity']);
+    var social_proof_sig = getParam('sp_sig', ['social_proof_signal']);
+    var authority_level  = getParam('auth', ['authority_level']);
+    var transformation   = getParam('transform', ['transformation']);
+    var identity_align   = getParam('ident', ['identity_align']);
+    var tribe_signal     = getParam('tribe', ['tribe_signal']);
+    var status_driver    = getParam('status', ['status_driver']);
+    var fear_based       = getParam('fear', ['fear_based']);
+    var aspiration       = getParam('aspire', ['aspiration']);
+    var trust_level      = getParam('trust', ['trust_level']);
+    var conversion_window = getParam('conv_win', ['conversion_window']);
+    var ltv_signal       = getParam('ltv', ['ltv_signal']);
+    var refund_risk      = getParam('refund', ['refund_risk']);
+    var upsell_ready     = getParam('upsell', ['upsell_ready']);
+    var segment_code     = getParam('seg', ['segment_code']);
+    var story_arc        = getParam('story', ['story_arc']);
+    var narrative_hook   = getParam('nhook', ['narrative_hook']);
+    var hero_journey     = getParam('hero', ['hero_journey']);
+    var layout_variant   = getParam('layout', ['layout_variant']);
+    var color_scheme     = getParam('colors', ['color_scheme']);
+    var compliance_flag  = getParam('comply', ['compliance_flag']);
+    var gdpr             = getParam('gdpr', []);
+    var ccpa             = getParam('ccpa', []);
+    var retarget_bucket  = getParam('rtb', ['retarget_bucket']);
+    var virality_score   = getParam('viral', ['virality_score']);
+    var shareable_factor = getParam('share', ['shareable_factor']);
+    var reuse_code       = getParam('reuse', ['reuse_code']);
+
+    // User Identity (non-PII tracking)
+    var user_email  = getParam('email', ['e']);
+    var user_phone  = getParam('phone', ['p']);
+    var user_name   = getParam('name', ['n']);
+    var user_fname  = getParam('fname', ['first_name']);
+    var user_lname  = getParam('lname', ['last_name']);
+    var calendly_name  = user_fname || user_name;
+    var calendly_email = user_email;
+
+    // Survey / Question answers
+    var q1  = getParam('q1', ['question_1', 'ans1']);
+    var q2  = getParam('q2', ['question_2', 'ans2']);
+    var q3  = getParam('q3', ['question_3', 'ans3']);
+    var q4  = getParam('q4', ['question_4', 'ans4']);
+    var q5  = getParam('q5', ['question_5', 'ans5']);
+    var q6  = getParam('q6', ['question_6', 'ans6']);
+    var q7  = getParam('q7', ['question_7', 'ans7']);
+    var q8  = getParam('q8', ['question_8', 'ans8']);
+    var q9  = getParam('q9', ['question_9', 'ans9']);
+    var q10 = getParam('q10', ['question_10', 'ans10']);
+
+    /* ===========================================================
+       5. TEST_ALL EXPANSION
+         If test_all=1, enable all features for QA testing
+    =========================================================== */
+    if (test_all === '1') {
+      if (!social_proof_param) social_proof_param = 'on';
+      if (!scarcity) scarcity = '3';
+      if (!progress) progress = '1';
+      if (!micro_yes) micro_yes = 'on';
+      if (!debug) debug = '1';
+    }
+
+    /* ===========================================================
+       6. STORE ALL PARAMS IN COOKIES (365-day persistence)
+    =========================================================== */
+    var allParams = {
+      // AdKernel Core
+      conversion: conversion, campaign: campaign, banner: banner,
+      publisher: publisher, offer: offer, goal_id: goal_id,
+      // AdKernel Native
+      pubzone: pubzone, country_name: country_name, region: region,
+      city: city, device_type: device_type, os: os,
+      browser: browser_param, Keyword: Keyword, bid: bid,
+      date: date_param, day_of_month: day_of_month, day_of_week: day_of_week,
+      device_brand: device_brand, device_model: device_model,
+      request_id: request_id, month: month_param,
+      original_subid: original_subid, os_type: os_type,
+      postback_id: postback_id, app_bundle: app_bundle, app_id: app_id,
+      pubfeed: pubfeed, subid: subid, payout: payout, pubpoint: pubpoint,
+      Query: Query, site_id: site_id, referrer_domain: referrer_domain,
+      remfeed: remfeed, ga: ga_param, search_referrer_domain: search_referrer,
+      search_ip: search_ip, source_subid: source_subid,
+      State_Name: State_Name, source: source, ip: ip, carrier: carrier,
+      zip: zip, state: state, country: country,
+      // Keitaro
+      sub1: sub1, sub2: sub2, sub3: sub3, sub4: sub4, sub5: sub5,
+      sub6: sub6, sub7: sub7, sub8: sub8, sub9: sub9, sub10: sub10,
+      _lp: _lp, _offer_id: _offer_id,
+      // Creative DNA
+      av: av, mb: mb, ii: interruptor_image, ih: image_hero,
+      ic: image_callouts, bc: body_copy, io: image_offer,
+      ct: cta_type, in: image_narrative, se: solution_emphasis,
+      ve: visual_element, up: unquestionable_proof, ps: problem_statement,
+      ca: curiosity_angle, wf: wow_factor, to: text_overlays,
+      sp: social_proof_type, tu: tracking_url,
+      ss: skip_stopper, ht: hook_type, mpp: main_pain_point,
+      nts: narrative_tone, vs: voiceover_style, pt: proof_type,
+      bm: background_music, ts: transition_style, gtu: graphics_text,
+      vl: video_length, ths: thumbnail_style, cp: call_pattern,
+      // Echo LP
+      hl: hl, sh: sh, cta: cta, img: img,
+      btn_color: btn_color, btn_size: btn_size, btn_style: btn_style,
+      overlay: overlay, font: font_param,
+      // Avalanche tokens
+      at: at, ag: ag, ad: ad, archetype: archetype, angle: angle,
+      phase: phase, eps_score: eps_score,
+      // Avalanche Intelligence
+      intent: intent_signal, urgency: urgency_level, objection: objection_type,
+      desire: desire_outcome, pain: pain_level, soph: sophistication,
+      aware: awareness_level, price_sens: price_sensitivity,
+      sp_sig: social_proof_sig, auth: authority_level,
+      transform: transformation, ident: identity_align, tribe: tribe_signal,
+      status: status_driver, fear: fear_based, aspire: aspiration,
+      trust: trust_level, conv_win: conversion_window, ltv: ltv_signal,
+      refund: refund_risk, upsell: upsell_ready, seg: segment_code,
+      story: story_arc, nhook: narrative_hook, hero: hero_journey,
+      layout: layout_variant, colors: color_scheme, comply: compliance_flag,
+      gdpr: gdpr, ccpa: ccpa, rtb: retarget_bucket, viral: virality_score,
+      share: shareable_factor, reuse: reuse_code,
+      // Survey
+      q1: q1, q2: q2, q3: q3, q4: q4, q5: q5,
+      q6: q6, q7: q7, q8: q8, q9: q9, q10: q10,
+      // User
+      email: user_email, phone: user_phone, name: user_name,
+      fname: user_fname, lname: user_lname
+    };
+
+    // Store everything in cookies
+    for (var key in allParams) {
+      if (allParams.hasOwnProperty(key) && allParams[key]) {
+        setCookie(key, allParams[key], 365);
+      }
+    }
+
+    // Also store page-specific metadata
+    setCookie('lp_url', window.location.href, 365);
+    setCookie('lp_referrer', document.referrer, 365);
+    setCookie('lp_timestamp', new Date().toISOString(), 365);
+
+    /* ===========================================================
+       7. APS CALCULATION ENGINE
+    =========================================================== */
+    var apsData = {
+      base: parseFloat(eps_score) || 0,
+      timeBonus: 0,
+      mouseBonus: 0,
+      hoverBonus: 0,
+      scrollBonus: 0,
+      emailBonus: 0,
+      phoneBonus: 0,
+      surveyBonus: 0,
+      mouseCount: 0,
+      hoverCount: 0,
+      startTime: Date.now(),
+      maxScrollDepth: 0
+    };
+
+    function calculateAPS() {
+      var total = apsData.base
+        + Math.min(apsData.timeBonus, 20)
+        + Math.min(apsData.mouseBonus, 10)
+        + Math.min(apsData.hoverBonus, 15)
+        + Math.min(apsData.scrollBonus, 10)
+        + apsData.emailBonus
+        + apsData.phoneBonus
+        + Math.min(apsData.surveyBonus, 25);
+      return Math.min(Math.round(total), 100);
+    }
+
+    function updateAPS() {
+      aps_score = calculateAPS();
+      setCookie('aps_score', aps_score, 365);
+      if (debug === '1') {
+        var apsEl = document.getElementById('debug-aps-value');
+        if (apsEl) apsEl.textContent = aps_score;
+      }
+    }
+
+    // Time on page bonus (0.1 per second, max 20)
+    setInterval(function() {
+      var secondsOnPage = (Date.now() - apsData.startTime) / 1000;
+      apsData.timeBonus = secondsOnPage * 0.1;
+      updateAPS();
+    }, 5000);
+
+    // Mouse movement tracking (0.05 per movement, max 10)
+    var mouseThrottle = null;
+    document.addEventListener('mousemove', function() {
+      if (mouseThrottle) return;
+      mouseThrottle = setTimeout(function() {
+        apsData.mouseCount++;
+        apsData.mouseBonus = apsData.mouseCount * 0.05;
+        updateAPS();
+        mouseThrottle = null;
+      }, 200);
+    });
+
+    // CTA hover tracking (+5 per hover, max 15)
+    var ctaBtn = document.getElementById('cta-button');
+    if (ctaBtn) {
+      ctaBtn.addEventListener('mouseenter', function() {
+        apsData.hoverCount++;
+        apsData.hoverBonus = apsData.hoverCount * 5;
+        updateAPS();
+      });
+    }
+
+    // Scroll depth tracking (0.1 per %, max 10)
+    window.addEventListener('scroll', function() {
+      var scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      if (scrolled > apsData.maxScrollDepth) {
+        apsData.maxScrollDepth = scrolled;
+        apsData.scrollBonus = scrolled * 0.1;
+        updateAPS();
+      }
+    });
+
+    /* ===========================================================
+       8. GTM DATA LAYER INIT
+    =========================================================== */
+    window.dataLayer = window.dataLayer || [];
+
+    function buildFullDataLayer() {
+      var obj = {};
+      for (var k in allParams) {
+        if (allParams.hasOwnProperty(k) && allParams[k]) {
+          obj[k] = allParams[k];
+        }
+      }
+      obj.eps_score = parseFloat(eps_score) || 0;
+      obj.eps_initial = parseFloat(eps_score) || 0;
+      obj.aps_current = aps_score;
+      obj.aps_score = aps_score;
+      obj.page_url = window.location.href;
+      obj.page_referrer = document.referrer;
+      obj.page_timestamp = new Date().toISOString();
+      return obj;
+    }
+
+    /* ===========================================================
+       9. BRAND-CONFIG LOADER
+    =========================================================== */
+    function loadBrandConfig() {
+      fetch('./brand-config.json?v=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(config) {
+          brandConfig = config;
+          initPage();
+        })
+        .catch(function(err) {
+          console.warn('[Echo LP] brand-config.json not found, using defaults.', err);
+          brandConfig = {};
+          initPage();
+        });
+    }
+
+    /* ===========================================================
+       10. PAGE INITIALIZATION
+    =========================================================== */
+    function initPage() {
+
+      // ── 10a. INJECT GTM ──────────────────────────────────────
+      var gtmId = deepGet(brandConfig, ['brand', 'gtmId'], '');
+      if (gtmId && gtmId !== 'GTM-XXXXXXX') {
+        (function(w,d,s,l,i){
+          w[l]=w[l]||[];
+          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+          var f=d.getElementsByTagName(s)[0];
+          var j=d.createElement(s);
+          var dl=l!='dataLayer'?'&l='+l:'';
+          j.async=true;
+          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+          f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer', gtmId);
+      }
+
+      // ── 10b. FONT ────────────────────────────────────────────
+      var fontUrl    = deepGet(brandConfig, ['branding', 'font', 'url'], '');
+      var fontFamily = font_param || deepGet(brandConfig, ['branding', 'font', 'family'], 'Inter');
+      var fontFallback = deepGet(brandConfig, ['branding', 'font', 'fallback'],
+        "system-ui, -apple-system, sans-serif");
+
+      if (fontUrl) {
+        var fontLink = document.getElementById('brand-font-link');
+        fontLink.href = fontUrl;
+      }
+      document.documentElement.style.setProperty('--brand-font',
+        "'" + fontFamily + "', " + fontFallback);
+      document.body.style.fontFamily = "'" + fontFamily + "', " + fontFallback;
+
+      // ── 10c. BACKGROUND IMAGE ────────────────────────────────
+      var isMobile = window.innerWidth <= 768;
+      var defaultImg    = deepGet(brandConfig, ['landing_page', 'defaults', 'background_image'], '');
+      var defaultImgMob = deepGet(brandConfig, ['landing_page', 'defaults', 'background_image_mobile'], '');
+      var heroImgSrc = '';
+
+      if (img) {
+        heroImgSrc = img;
+        // Auto-detect mobile version if not explicitly set
+        if (isMobile && !img.includes('_mobile')) {
+          var mobileVersion = img.replace(/(\.\w+)$/, '_mobile$1');
+          heroImgSrc = mobileVersion;
+        }
+      } else if (isMobile && defaultImgMob) {
+        heroImgSrc = 'public/' + defaultImgMob;
+      } else if (defaultImg) {
+        heroImgSrc = 'public/' + defaultImg;
+      }
+
+      if (heroImgSrc) {
+        var heroBg = document.getElementById('hero-bg');
+        heroBg.style.backgroundImage = "url('" + heroImgSrc + "')";
+      }
+
+      // ── 10d. OVERLAY ─────────────────────────────────────────
+      var overlayMap = { light: 0.30, medium: 0.50, dark: 0.65, xdark: 0.80 };
+      var overlayVal = overlay || deepGet(brandConfig, ['landing_page', 'defaults', 'overlay'], 'dark');
+      var overlayOpacity = overlayMap[overlayVal] || 0.65;
+      document.documentElement.style.setProperty('--overlay-opacity', overlayOpacity);
+
+      // ── 10e. HEADLINE & SUBHEADLINE ──────────────────────────
+      var defaultHl = deepGet(brandConfig, ['landing_page', 'defaults', 'headline'],
+        'Transform Your Business Today');
+      var defaultSh = deepGet(brandConfig, ['landing_page', 'defaults', 'subheadline'],
+        'Join thousands of entrepreneurs who\'ve unlocked consistent, scalable growth');
+
+      var finalHl = hl || defaultHl;
+      var finalSh = sh || defaultSh;
+
+      document.getElementById('headline').textContent = finalHl;
+      document.getElementById('subheadline').textContent = finalSh;
+      document.title = finalHl + ' | ' + (deepGet(brandConfig, ['brand', 'name'], 'Echo LP'));
+
+      // ── 10f. CTA BUTTON ──────────────────────────────────────
+      var defaultCta     = deepGet(brandConfig, ['landing_page', 'defaults', 'cta_text'], 'Get Started Now');
+      var defaultCtaLink = deepGet(brandConfig, ['landing_page', 'defaults', 'cta_link'], '#');
+      var defaultBtnColor = deepGet(brandConfig, ['landing_page', 'styling', 'button_color'], '#2563eb');
+      var defaultBtnSize  = deepGet(brandConfig, ['landing_page', 'styling', 'button_size'], 'xlarge');
+      var defaultBtnStyle = deepGet(brandConfig, ['landing_page', 'styling', 'button_style'], 'rounded');
+
+      var finalCtaText  = cta || defaultCta;
+      var finalBtnColor = btn_color || defaultBtnColor;
+      var finalBtnSize  = btn_size  || defaultBtnSize;
+      var finalBtnStyle = btn_style || defaultBtnStyle;
+
+      document.documentElement.style.setProperty('--btn-color', finalBtnColor);
+      document.getElementById('cta-text').textContent = finalCtaText;
+
+      var ctaEl = document.getElementById('cta-button');
+      ctaEl.className = 'size-' + finalBtnSize + ' style-' + finalBtnStyle;
+
+      // CTA href: route to conversion-tracker (which routes to offer)
+      var ctaLinkHref = 'conversion-tracker.html' + window.location.search;
+      ctaEl.href = ctaLinkHref;
+
+      // ── 10g. SCARCITY ────────────────────────────────────────
+      var scarcityEnabled = scarcity || (deepGet(brandConfig, ['landing_page', 'features', 'scarcity', 'enabled'], false) ? '3' : '');
+      if (scarcityEnabled) {
+        var spots = parseInt(scarcityEnabled) || deepGet(brandConfig, ['landing_page', 'features', 'scarcity', 'default_spots'], 3);
+        var scarcityMsg = scarcity_text ||
+          deepGet(brandConfig, ['landing_page', 'features', 'scarcity', 'default_text'],
+            'Only {N} spots remaining today');
+        scarcityMsg = scarcityMsg.replace('{N}', spots);
+        var scarcityEl = document.getElementById('scarcity');
+        scarcityEl.textContent = '⚡ ' + scarcityMsg;
+        scarcityEl.classList.add('active');
+        document.body.classList.add('has-scarcity');
+      }
+
+      // ── 10h. SOCIAL PROOF POPUP ──────────────────────────────
+      var spEnabled = social_proof_param === 'on' ||
+        deepGet(brandConfig, ['landing_page', 'features', 'social_proof', 'enabled'], false);
+
+      if (spEnabled) {
+        var spVariants = [
+          { emoji: '👩‍💼', name: 'Sarah M.', text: 'Just registered from New York', time: '2 minutes ago' },
+          { emoji: '👨‍💻', name: 'James K.',  text: 'Joined from Los Angeles', time: '5 minutes ago' },
+          { emoji: '👩‍🎓', name: 'Maria R.', text: 'Signed up from Chicago', time: '8 minutes ago' },
+          { emoji: '🧑‍🚀', name: 'David T.', text: 'Just booked a session', time: '12 minutes ago' },
+          { emoji: '👩‍🔬', name: 'Lisa P.',  text: 'Applied from Miami', time: '3 minutes ago' },
+          { emoji: '🧑‍💼', name: 'Alex W.',  text: 'Getting started now', time: '7 minutes ago' }
+        ];
+
+        var customText = social_text || deepGet(brandConfig, ['landing_page', 'features', 'social_proof', 'default_text'], '');
+
+        function showSocialProof() {
+          var variant = spVariants[Math.floor(Math.random() * spVariants.length)];
+          var spEl = document.getElementById('social-proof');
+          document.getElementById('sp-avatar').textContent = variant.emoji;
+          document.getElementById('sp-name').textContent = variant.name;
+          document.getElementById('sp-text').textContent = customText || variant.text;
+          document.getElementById('sp-time').textContent = variant.time;
+          spEl.classList.add('active');
+          spEl.style.animation = 'none';
+          spEl.offsetHeight; // reflow
+          spEl.style.animation = '';
+
+          setTimeout(function() {
+            spEl.classList.remove('active');
+          }, 5000);
+        }
+
+        // Show first popup after 8 seconds, then every 20 seconds
+        setTimeout(function() {
+          showSocialProof();
+          setInterval(showSocialProof, 20000);
+        }, 8000);
+      }
+
+      // ── 10i. MICRO-YES CHECKBOX ──────────────────────────────
+      var microYesEnabled = micro_yes === 'on' ||
+        deepGet(brandConfig, ['landing_page', 'features', 'micro_yes', 'enabled'], false);
+
+      if (microYesEnabled) {
+        var defaultMicroText = deepGet(brandConfig, ['landing_page', 'features', 'micro_yes', 'default_text'],
+          'Yes, I want to transform my business and achieve consistent results');
+        var finalMicroText = micro_text || defaultMicroText;
+        document.getElementById('micro-yes-label').textContent = finalMicroText;
+        document.getElementById('micro-yes-container').classList.add('active');
+
+        // Dim CTA until checkbox checked
+        var ctaBtn2 = document.getElementById('cta-button');
+        ctaBtn2.classList.add('dimmed');
+
+        document.getElementById('micro-yes-checkbox').addEventListener('change', function() {
+          if (this.checked) {
+            ctaBtn2.classList.remove('dimmed');
+            apsData.surveyBonus += 10;
+            updateAPS();
+          } else {
+            ctaBtn2.classList.add('dimmed');
+          }
+        });
+
+        document.getElementById('micro-yes-container').addEventListener('click', function(e) {
+          if (e.target.id !== 'micro-yes-checkbox') {
+            var cb = document.getElementById('micro-yes-checkbox');
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change'));
+          }
+        });
+      }
+
+      // ── 10j. PROGRESS INDICATOR ──────────────────────────────
+      var progressEnabled = progress === '1' ||
+        deepGet(brandConfig, ['landing_page', 'features', 'progress', 'enabled'], false);
+
+      if (progressEnabled) {
+        var totalSteps = deepGet(brandConfig, ['landing_page', 'features', 'progress', 'total_steps'], 3);
+        document.getElementById('progress-text').textContent = 'Step 1 of ' + totalSteps;
+        document.getElementById('progress-indicator').classList.add('active');
+      }
+
+      // ── 10k. LEGAL CONSENT TEXT ──────────────────────────────
+      var legalEnabled = deepGet(brandConfig, ['landing_page', 'features', 'legal_consent', 'enabled'], true);
+      if (legalEnabled) {
+        var legalText = deepGet(brandConfig, ['landing_page', 'features', 'legal_consent', 'text'],
+          'By clicking above, you agree to our <a href="/privacy" style="color:inherit;text-decoration:underline;">Privacy Policy</a> and <a href="/terms" style="color:inherit;text-decoration:underline;">Terms of Service</a>.');
+        var legalEl = document.getElementById('legal-consent');
+        legalEl.innerHTML = legalText;
+      }
+
+      // ── 10l. FOOTER ──────────────────────────────────────────
+      buildFooter(brandConfig);
+
+      // ── 10m. DEBUG PANEL ─────────────────────────────────────
+      if (debug === '1') {
+        var debugPanel = document.getElementById('debug-panel');
+        debugPanel.classList.add('active');
+        document.getElementById('debug-aps').classList.add('active');
+        document.getElementById('debug-eps-value').textContent = eps_score || '0';
+
+        var debugLines = [
+          '🎯 Echo LP v2.3',
+          '─────────────────',
+          'Conversion: ' + (conversion || '(none)'),
+          'Campaign: ' + (campaign || '(none)'),
+          'Archetype: ' + (archetype || '(none)'),
+          'Angle: ' + (angle || '(none)'),
+          'Ad: ' + (ad || '(none)'),
+          'Phase: ' + (phase || '(none)'),
+          'EPS: ' + (eps_score || '0'),
+          'APS: ' + aps_score,
+          '─────────────────',
+          'City: ' + (city || '(none)'),
+          'Device: ' + (device_type || '(none)'),
+          'OS: ' + (os || '(none)'),
+          '─────────────────',
+          'test_all: ' + (test_all || 'off'),
+          'social_proof: ' + (spEnabled ? 'ON' : 'off'),
+          'scarcity: ' + (scarcityEnabled || 'off'),
+          'micro_yes: ' + (microYesEnabled ? 'ON' : 'off'),
+          'progress: ' + (progressEnabled ? 'ON' : 'off')
+        ];
+        document.getElementById('debug-content').innerHTML =
+          debugLines.map(function(l) { return l; }).join('<br>');
+      }
+
+      // ── 10n. READY STATE ─────────────────────────────────────
+      document.body.classList.remove('loading');
+      document.body.classList.add('ready');
+
+      // ── 10o. GTM EVENTS ──────────────────────────────────────
+      firePageViewEvents();
+    }
+
+    /* ===========================================================
+       11. FOOTER BUILDER
+    =========================================================== */
+    function buildFooter(config) {
+      var footerEnabled = deepGet(config, ['footer', 'enabled'], true);
+      var footerEl = document.getElementById('page-footer');
+      if (!footerEnabled) {
+        if (footerEl) footerEl.style.display = 'none';
+        return;
+      }
+
+      // Logo
+      var showLogo = deepGet(config, ['footer', 'logo', 'show'], true);
+      var logoFile = deepGet(config, ['branding', 'logo', 'filename'], '');
+      var logoHeight = deepGet(config, ['branding', 'logo', 'height'], '48px');
+      var logoAlt  = deepGet(config, ['branding', 'logo', 'alt'], 'Brand Logo');
+      var logoLink = deepGet(config, ['branding', 'logo', 'link'], '#');
+
+      if (showLogo && logoFile) {
+        var logoWrap = document.getElementById('footer-logo-wrap');
+        var logoImg  = document.getElementById('footer-logo-img');
+        var logoA    = document.getElementById('footer-logo-link');
+        logoImg.src = 'public/' + logoFile;
+        logoImg.alt = logoAlt;
+        logoImg.style.height = logoHeight;
+        logoA.href = logoLink;
+        logoWrap.style.display = 'block';
+      }
+
+      // Social Icons (inline SVG, no image files)
+      var socialIcons = {
+        facebook: {
+          url: deepGet(config, ['footer', 'social_links', 'facebook', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'facebook', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>'
+        },
+        instagram: {
+          url: deepGet(config, ['footer', 'social_links', 'instagram', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'instagram', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>'
+        },
+        twitter: {
+          url: deepGet(config, ['footer', 'social_links', 'twitter', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'twitter', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.635 5.905-5.635zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+        },
+        linkedin: {
+          url: deepGet(config, ['footer', 'social_links', 'linkedin', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'linkedin', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>'
+        },
+        youtube: {
+          url: deepGet(config, ['footer', 'social_links', 'youtube', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'youtube', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>'
+        },
+        tiktok: {
+          url: deepGet(config, ['footer', 'social_links', 'tiktok', 'url'], '#'),
+          enabled: deepGet(config, ['footer', 'social_links', 'tiktok', 'enabled'], false),
+          svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>'
+        }
+      };
+
+      var socialContainer = document.getElementById('footer-social');
+      var hasSocialIcons = false;
+
+      ['facebook', 'instagram', 'twitter', 'linkedin', 'youtube', 'tiktok'].forEach(function(platform) {
+        var icon = socialIcons[platform];
+        if (icon.enabled && icon.url && icon.url !== '#') {
+          hasSocialIcons = true;
+          var a = document.createElement('a');
+          a.href = icon.url;
+          a.className = 'social-icon';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.setAttribute('aria-label', platform.charAt(0).toUpperCase() + platform.slice(1));
+          a.innerHTML = icon.svg;
+          socialContainer.appendChild(a);
+        }
+      });
+
+      if (hasSocialIcons) {
+        socialContainer.style.display = 'flex';
+      }
+
+      // Footer Links
+      var footerLinks = document.getElementById('footer-links');
+      var linkDefs = [
+        { key: 'privacy',  text: deepGet(config, ['footer', 'links', 'privacy', 'text'], 'Privacy Policy'),   url: deepGet(config, ['footer', 'links', 'privacy', 'url'], '/privacy'),   enabled: deepGet(config, ['footer', 'links', 'privacy', 'enabled'], true) },
+        { key: 'terms',    text: deepGet(config, ['footer', 'links', 'terms', 'text'],   'Terms of Service'), url: deepGet(config, ['footer', 'links', 'terms', 'url'],   '/terms'),     enabled: deepGet(config, ['footer', 'links', 'terms', 'enabled'],   true) },
+        { key: 'cookies',  text: deepGet(config, ['footer', 'links', 'cookies', 'text'], 'Cookie Policy'),    url: deepGet(config, ['footer', 'links', 'cookies', 'url'], '/cookies'),   enabled: deepGet(config, ['footer', 'links', 'cookies', 'enabled'],  true) },
+        { key: 'contact',  text: deepGet(config, ['footer', 'links', 'contact', 'text'], 'Contact'),          url: deepGet(config, ['footer', 'links', 'contact', 'url'], '/contact'),   enabled: deepGet(config, ['footer', 'links', 'contact', 'enabled'],  true) }
+      ];
+
+      var activeLinks = linkDefs.filter(function(l) { return l.enabled; });
+      activeLinks.forEach(function(link, idx) {
+        var a = document.createElement('a');
+        a.href = link.url;
+        a.textContent = link.text;
+        footerLinks.appendChild(a);
+        if (idx < activeLinks.length - 1) {
+          var sep = document.createElement('span');
+          sep.className = 'sep';
+          sep.textContent = '·';
+          footerLinks.appendChild(sep);
+        }
+      });
+
+      // Copyright
+      var copyright = deepGet(config, ['brand', 'copyright'],
+        '© ' + new Date().getFullYear() + ' Your Brand. All rights reserved.');
+      document.getElementById('footer-copyright').textContent = copyright;
+    }
+
+    /* ===========================================================
+       12. GTM EVENTS - PAGE VIEW (Step 0)
+    =========================================================== */
+    function firePageViewEvents() {
+
+      var baseData = buildFullDataLayer();
+
+      // EVENT 1: echo_lp_view (Step 0 - page view)
+      window.dataLayer.push(Object.assign({}, baseData, {
+        event: 'echo_lp_view',
+        funnel_step: 'step_0',
+        headline: document.getElementById('headline').textContent,
+        subheadline: document.getElementById('subheadline').textContent
+      }));
+
+      if (debug === '1') {
+        console.log('[Echo LP] 📊 echo_lp_view fired (step_0)');
+      }
+
+      // EVENT 2: master_lp_view_retargeting (Step 0 - retargeting pixels)
+      window.dataLayer.push({
+        event: 'master_lp_view_retargeting',
+        funnel_step: 'step_0',
+        conversion: conversion,
+        archetype: archetype,
+        angle: angle,
+        ad: ad,
+        phase: phase,
+        eps_score: parseFloat(eps_score) || 0,
+        aps_current: aps_score,
+        campaign: campaign,
+        banner: banner,
+        publisher: publisher,
+        city: city,
+        region: region,
+        device_type: device_type
+      });
+
+      if (debug === '1') {
+        console.log('[Echo LP] 📊 master_lp_view_retargeting fired (step_0)');
+      }
+
+      // ── CTA CLICK HANDLER ────────────────────────────────────
+      var ctaLink = document.getElementById('cta-button');
+      if (ctaLink) {
+        ctaLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          fireCTAClickEvents(this.href);
+        });
+      }
+    }
+
+    /* ===========================================================
+       13. GTM EVENTS - CTA CLICK (Step 1)
+    =========================================================== */
+    function fireCTAClickEvents(destinationHref) {
+
+      var currentAPS = calculateAPS();
+      setCookie('aps_score', currentAPS, 365);
+
+      // EVENT 3: echo_cta_click
+      window.dataLayer.push({
+        event: 'echo_cta_click',
+        funnel_step: 'step_1',
+        dsp_step: 'step_1',
+        conversion: conversion,
+        campaign: campaign,
+        banner: banner,
+        publisher: publisher,
+        archetype: archetype,
+        angle: angle,
+        ad: ad,
+        phase: phase,
+        eps_score: parseFloat(eps_score) || 0,
+        aps_current: currentAPS,
+        eps_initial: parseFloat(eps_score) || 0,
+        cta_text: document.getElementById('cta-text').textContent,
+        time_on_page: Math.round((Date.now() - apsData.startTime) / 1000),
+        city: city, region: region, device_type: device_type
+      });
+
+      if (debug === '1') {
+        console.log('[Echo LP] 📊 echo_cta_click fired (step_1)');
+      }
+
+      // EVENT 4: dsp_postback (Step 1 - AdKernel)
+      // CRITICAL: Always fire - NO goal_id validation. GTM handles goal_id in postback URL.
+      window.dataLayer.push({
+        event: 'dsp_postback',
+        funnel_step: 'step_1',
+        dsp_step: 'step_1',
+        conversion: conversion,
+        conversion_value: '0',
+        campaign: campaign,
+        banner: banner,
+        publisher: publisher,
+        archetype: archetype,
+        angle: angle,
+        ad: ad,
+        aps_current: currentAPS,
+        eps_initial: parseFloat(eps_score) || 0
+      });
+
+      if (debug === '1') {
+        console.log('[Echo LP] 📊 dsp_postback fired (step_1) - GTM handles goal_id');
+      }
+
+      // EVENT 5: master_lp_click_retargeting
+      window.dataLayer.push({
+        event: 'master_lp_click_retargeting',
+        funnel_step: 'step_1',
+        conversion: conversion,
+        archetype: archetype,
+        angle: angle,
+        ad: ad,
+        phase: phase,
+        eps_score: parseFloat(eps_score) || 0,
+        aps_current: currentAPS,
+        campaign: campaign,
+        banner: banner,
+        publisher: publisher
+      });
+
+      if (debug === '1') {
+        console.log('[Echo LP] 📊 master_lp_click_retargeting fired (step_1)');
+        console.log('[Echo LP] ✅ All step_1 events fired. Redirecting to: ' + destinationHref);
+      }
+
+      // Redirect AFTER events fire
+      setTimeout(function() {
+        window.location.href = destinationHref;
+      }, 150);
+    }
+
+    /* ===========================================================
+       14. FORMBRICKS / TYPEBOT INTEGRATION
+         Listens for form completion events to fire lead_conversion
+    =========================================================== */
+    window.addEventListener('message', function(event) {
+      var data = event.data;
+      if (!data) return;
+
+      // FormBricks complete event
+      var isFBComplete = (data.type === 'FORMBRICKS_SURVEY_COMPLETED') ||
+        (data.event === 'formbricks:surveyCompleted') ||
+        (data.action === 'survey_completed');
+
+      // TypeBot complete event
+      var isTBComplete = (data.type === 'typebot-form-complete') ||
+        (data.event === 'typebot:complete');
+
+      if (isFBComplete || isTBComplete) {
+        var formSource = isFBComplete ? 'formbricks' : 'typebot';
+
+        // Extract survey answers if present
+        if (data.answers) {
+          var answers = data.answers;
+          for (var i = 0; i < answers.length && i < 10; i++) {
+            var qKey = 'q' + (i+1);
+            var qVal = answers[i].value || answers[i].text || answers[i];
+            if (qVal) {
+              setCookie(qKey, qVal, 365);
+              allParams[qKey] = qVal;
+              // APS bonus for answering questions
+              apsData.surveyBonus += 5;
+            }
+          }
+          updateAPS();
+        }
+
+        // Email/phone APS bonuses
+        if (data.email || (data.answers && data.answers.some(function(a) { return a.type === 'email'; }))) {
+          apsData.emailBonus = 15;
+          updateAPS();
+        }
+        if (data.phone || (data.answers && data.answers.some(function(a) { return a.type === 'phone'; }))) {
+          apsData.phoneBonus = 15;
+          updateAPS();
+        }
+
+        var finalAPS = calculateAPS();
+        setCookie('aps_score', finalAPS, 365);
+
+        // EVENT: lead_conversion
+        window.dataLayer.push({
+          event: 'lead_conversion',
+          funnel_step: 'step_2',
+          dsp_step: 'step_2',
+          lead_source: formSource,
+          conversion: conversion,
+          campaign: campaign,
+          banner: banner,
+          publisher: publisher,
+          archetype: archetype,
+          angle: angle,
+          ad: ad,
+          phase: phase,
+          eps_score: parseFloat(eps_score) || 0,
+          aps_current: finalAPS,
+          eps_initial: parseFloat(eps_score) || 0,
+          email: data.email || user_email,
+          phone: data.phone || user_phone,
+          name: data.name || user_name
+        });
+
+        // EVENT: master_lead_retargeting
+        window.dataLayer.push({
+          event: 'master_lead_retargeting',
+          funnel_step: 'step_2',
+          conversion: conversion,
+          archetype: archetype,
+          angle: angle,
+          ad: ad,
+          eps_score: parseFloat(eps_score) || 0,
+          aps_current: finalAPS,
+          campaign: campaign, banner: banner, publisher: publisher
+        });
+
+        if (debug === '1') {
+          console.log('[Echo LP] 📊 lead_conversion fired (step_2, source: ' + formSource + ')');
+          console.log('[Echo LP] 📊 master_lead_retargeting fired (step_2)');
+        }
+      }
+    });
+
+    /* ===========================================================
+       15. BOT DETECTION - Basic fingerprint checks
+    =========================================================== */
+    function detectBot() {
+      var isBot = false;
+      if (navigator.webdriver) isBot = true;
+      if (!navigator.language) isBot = true;
+      if (navigator.plugins && navigator.plugins.length === 0 && navigator.platform !== '') {
+        // Possible headless browser
+      }
+      if (isBot) {
+        setCookie('is_bot', '1', 1);
+      }
+      return isBot;
+    }
+
+    var botDetected = detectBot();
+    if (botDetected && debug === '1') {
+      console.warn('[Echo LP] ⚠️ Bot detected');
+    }
+
+    /* ===========================================================
+       16. KICKSTART
+    =========================================================== */
+    loadBrandConfig();
+
+  })();
+  </script>
+
+  <!-- GTM NOSCRIPT (injected by JS above, but also here as fallback) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+      height="0" width="0" style="display:none;visibility:hidden" title="GTM"></iframe>
+  </noscript>
+
+</body>
+</html>

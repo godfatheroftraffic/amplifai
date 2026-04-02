@@ -1,0 +1,22 @@
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+
+# Node modules (if using npm)
+node_modules/
+
+# Brand-specific images (each brand adds their own)
+public/*.jpg
+public/*.png
+public/*.jpeg
+public/*.gif
+!public/.gitkeep
+
+# Brand config customizations
+# Master keeps template, brands customize locally
+# brand-config.json
+
+# IDE files
+.vscode/
+.idea/

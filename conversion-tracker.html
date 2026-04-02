@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Processing...</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Font loaded from brand-config -->
+  <link id="brand-font-link" rel="stylesheet" href="">
+
+  <style>
+    /* ============================================================
+       ECHO CONVERSION TRACKER v2.3 — STYLES
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: var(--brand-font, 'Inter', system-ui, sans-serif);
+      background: #050510;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    :root {
+      --brand-font: 'Inter', system-ui, sans-serif;
+      --btn-color: #2563eb;
+      --accent: #7c3aed;
+      --overlay-opacity: 0.65;
+    }
+
+    #bg-gradient {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at center top, #1a1060 0%, #050510 60%);
+      z-index: -1;
+    }
+
+    #hero-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+
+    #hero-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, var(--overlay-opacity));
+      z-index: 1;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .bg-orb-1 { width: 400px; height: 400px; background: var(--btn-color); top: -100px; left: -100px; animation-delay: 0s; }
+    .bg-orb-2 { width: 350px; height: 350px; background: var(--accent); bottom: -80px; right: -80px; animation-delay: -4s; }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -20px) scale(1.05); }
+      66% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
+    #page-wrapper {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    #tracker-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    #tracker-logo { display: none; margin-bottom: 28px; }
+    #tracker-logo img { height: 44px; width: auto; object-fit: contain; opacity: 0.9; }
+
+    #spinner-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .spinner-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      animation: spinnerRotate linear infinite;
+    }
+
+    .spinner-ring-1 { width: 80px; height: 80px; border-top-color: var(--btn-color); animation-duration: 1.2s; }
+    .spinner-ring-2 { width: 64px; height: 64px; border-right-color: var(--accent); animation-duration: 0.9s; animation-direction: reverse; }
+    .spinner-ring-3 { width: 48px; height: 48px; border-bottom-color: rgba(255,255,255,0.3); animation-duration: 1.8s; }
+
+    .spinner-center {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--btn-color), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      animation: centerPulse 2s ease-in-out infinite;
+      position: relative; z-index: 1;
+    }
+
+    @keyframes spinnerRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes centerPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37,99,235,0.4); }
+      50% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(37,99,235,0); }
+    }
+
+    #tracker-title { font-size: 1.5rem; font-weight: 700; color: #ffffff; margin-bottom: 10px; letter-spacing: -0.01em; }
+    #tracker-subtitle { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-bottom: 32px; line-height: 1.5; }
+
+    #progress-bar-wrap {
+      width: 100%; height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 100px; overflow: hidden; margin-bottom: 16px;
+    }
+
+    #progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--btn-color), var(--accent));
+      border-radius: 100px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 12px var(--btn-color);
+    }
+
+    #progress-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 28px; }
+
+    #status-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; }
+
+    .status-step {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; color: rgba(255,255,255,0.4);
+      transition: all 0.3s ease;
+    }
+    .status-step.active { color: rgba(255,255,255,0.9); }
+    .status-step.done { color: rgba(255,255,255,0.6); }
+
+    .step-dot {
+      width: 20px; height: 20px; min-width: 20px;
+      border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; transition: all 0.3s ease;
+    }
+    .status-step.active .step-dot { border-color: var(--btn-color); background: var(--btn-color); animation: dotPulse 1s ease-in-out infinite; }
+    .status-step.done .step-dot { border-color: #22c55e; background: #22c55e; color: #fff; }
+
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); }
+      50% { box-shadow: 0 0 0 4px rgba(37,99,235,0); }
+    }
+
+    #ct-continue-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 14px 36px;
+      background: var(--btn-color);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+    #ct-continue-btn:hover { filter: brightness(1.12); }
+
+    #split-badge { display: none; font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+
+    #debug-panel {
+      display: none;
+      position: fixed; top: 10px; right: 10px;
+      background: rgba(0,0,0,0.92);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 16px;
+      font-size: 11px; color: #4ade80;
+      font-family: monospace; z-index: 9999;
+      max-width: 320px; max-height: 500px; overflow-y: auto; line-height: 1.6;
+    }
+    #debug-panel.active { display: block; }
+    #debug-panel .dtitle { color: #facc15; font-weight: 700; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+    #page-footer {
+      position: relative; z-index: 2;
+      background: rgba(0,0,0,0.4);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 20px; text-align: center;
+    }
+    #footer-inner { max-width: 600px; margin: 0 auto; }
+    #footer-logo-wrap { margin-bottom: 12px; }
+    #footer-logo-wrap img { height: 36px; width: auto; opacity: 0.7; }
+    #footer-social { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; border: 1px solid transparent; }
+    .social-icon:hover { color: #fff; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
+    .social-icon svg { width: 16px; height: 16px; fill: currentColor; }
+    #footer-links { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    #footer-links a { color: rgba(255,255,255,0.35); text-decoration: none; font-size: 11px; transition: color 0.2s; }
+    #footer-links a:hover { color: rgba(255,255,255,0.7); }
+    #footer-links .sep { color: rgba(255,255,255,0.15); font-size: 11px; }
+    #footer-copyright { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    #survey-container { display: none; width: 100%; max-width: 720px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    #survey-container.active { display: block; }
+    #survey-iframe { width: 100%; height: 600px; border: none; border-radius: 20px; }
+
+    @media (max-width: 600px) {
+      #tracker-card { padding: 32px 24px; margin: 0 8px; }
+      #tracker-title { font-size: 1.25rem; }
+      #survey-iframe { height: 500px; }
+      .spinner-ring-1 { width: 70px; height: 70px; }
+      .spinner-ring-2 { width: 56px; height: 56px; }
+      .spinner-ring-3 { width: 42px; height: 42px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg-gradient"></div>
+  <div id="hero-bg"></div>
+  <div id="hero-overlay"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+
+  <div id="page-wrapper">
+    <main id="main-content">
+      <div id="tracker-card">
+
+        <div id="tracker-logo">
+          <img id="tracker-logo-img" src="" alt="Brand Logo">
+        </div>
+
+        <div id="spinner-wrap" aria-hidden="true">
+          <div class="spinner-ring spinner-ring-1"></div>
+          <div class="spinner-ring spinner-ring-2"></div>
+          <div class="spinner-ring spinner-ring-3"></div>
+          <div class="spinner-center">✦</div>
+        </div>
+
+        <h1 id="tracker-title">Processing Your Information</h1>
+        <p id="tracker-subtitle">Please wait while we prepare your personalized experience...</p>
+
+        <div id="progress-bar-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar-fill"></div>
+        </div>
+        <p id="progress-label">0% Complete</p>
+
+        <div id="status-steps">
+          <div class="status-step active" id="step-tracking" role="status">
+            <div class="step-dot">•</div>
+            <span>Confirming your information</span>
+          </div>
+          <div class="status-step" id="step-personalizing">
+            <div class="step-dot">2</div>
+            <span>Personalizing your experience</span>
+          </div>
+          <div class="status-step" id="step-redirecting">
+            <div class="step-dot">3</div>
+            <span>Preparing your next step</span>
+          </div>
+        </div>
+
+        <a id="ct-continue-btn" href="#" role="button">Continue &#x2192;</a>
+
+        <p id="split-badge"></p>
+
+      </div><!-- /#tracker-card -->
+
+      <div id="survey-container">
+        <iframe id="survey-iframe" title="Survey" allow="camera; microphone"></iframe>
+      </div>
+    </main>
+
+    <footer id="page-footer">
+      <div id="footer-inner">
+        <div id="footer-logo-wrap" style="display:none;">
+          <a id="footer-logo-link" href="#" target="_blank" rel="noopener">
+            <img id="footer-logo-img" src="" alt="Brand Logo">
+          </a>
+        </div>
+        <div id="footer-social" style="display:none;"></div>
+        <nav id="footer-links" aria-label="Footer links"></nav>
+        <p id="footer-copyright"></p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="debug-panel">
+    <div class="dtitle">&#x1F50D; CONVERSION TRACKER v2.3 DEBUG</div>
+    <div id="debug-content"></div>
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    function getCookie(name) {
+      var nameEQ = name + '=';
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0)
+          return decodeURIComponent(c.substring(nameEQ.length));
+      }
+      return '';
+    }
+
+    function setCookie(name, value, days) {
+      if (!value) return;
+      var expires = new Date();
+      expires.setTime(expires.getTime() + ((days || 365) * 86400000));
+      document.cookie = name + '=' + encodeURIComponent(String(value))
+        + '; expires=' + expires.toUTCString()
+        + '; path=/; SameSite=Lax';
+    }
+
+    var urlParams = (function() {
+      var p = {};
+      window.location.search.substring(1).split('&').forEach(function(pair) {
+        var kv = pair.split('=');
+        if (kv[0]) p[decodeURIComponent(kv[0])] = kv[1]
+          ? decodeURIComponent(kv[1].replace(/\+/g, ' ')) : '';
+      });
+      return p;
+    })();
+
+    function getParam(primary, aliases) {
+      if (urlParams[primary]) return urlParams[primary];
+      if (aliases) {
+        for (var i = 0; i < aliases.length; i++)
+          if (urlParams[aliases[i]]) return urlParams[aliases[i]];
+      }
+      return getCookie(primary) || '';
+    }
+
+    function deepGet(obj, path, fallback) {
+      try { return path.reduce(function(o,k){return o[k];}, obj) || fallback; }
+      catch(e) { return fallback; }
+    }
+
+    var trackingData = {
+      conversion:   getParam('conversion', ['trck', 'click_id', 'cid']),
+      campaign:     getParam('campaign',   ['campaign_id']),
+      banner:       getParam('banner',     ['creative_id', 'banner_id']),
+      publisher:    getParam('publisher',  ['publisher_id']),
+      offer:        getParam('offer',      ['offer_id']),
+      goal_id:      getParam('goal_id',    []),
+      country_name: getParam('country_name', []),
+      region:       getParam('region', []),
+      city:         getParam('city', []),
+      device_type:  getParam('device_type', []),
+      os:           getParam('os', []),
+      Keyword:      getParam('Keyword', ['keyword']),
+      State_Name:   getParam('State_Name', ['state_name']),
+      country:      getParam('country', []),
+      state:        getParam('state', []),
+      zip:          getParam('zip', []),
+      carrier:      getParam('carrier', []),
+      sub1: getParam('sub1', ['sub_id_1']),
+      sub2: getParam('sub2', ['sub_id_2']),
+      sub3: getParam('sub3', ['sub_id_3']),
+      sub4: getParam('sub4', ['sub_id_4']),
+      sub5: getParam('sub5', ['sub_id_5']),
+      at:        getParam('at', ['archetype']),
+      ag:        getParam('ag', ['angle']),
+      ad:        getParam('ad', []),
+      archetype: getParam('archetype', ['at']),
+      angle:     getParam('angle', ['ag']),
+      phase:     getParam('phase', []),
+      av:        getParam('av', ['ad_variation']),
+      mb:        getParam('mb', ['media_buyer']),
+      eps_score: getParam('eps_score', ['eps']),
+      aps_score: getParam('aps_score', ['aps']),
+      q1:  getParam('q1',  []), q2:  getParam('q2',  []),
+      q3:  getParam('q3',  []), q4:  getParam('q4',  []),
+      q5:  getParam('q5',  []), q6:  getParam('q6',  []),
+      q7:  getParam('q7',  []), q8:  getParam('q8',  []),
+      q9:  getParam('q9',  []), q10: getParam('q10', []),
+      email: getParam('email', ['e']),
+      phone: getParam('phone', ['p']),
+      name:  getParam('name',  ['n']),
+      fname: getParam('fname', ['first_name']),
+      lname: getParam('lname', ['last_name']),
+      ii: getParam('ii', ['interruptor_image']),
+      ih: getParam('ih', ['image_hero']),
+      bc: getParam('bc', ['body_copy']),
+      ct: getParam('ct', ['cta_type']),
+      ps: getParam('ps', ['problem_statement']),
+      se: getParam('se', ['solution_emphasis']),
+      up: getParam('up', ['unquestionable_proof']),
+      lp_url:            getCookie('lp_url'),
+      lp_referrer:       getCookie('lp_referrer'),
+      lp_timestamp:      getCookie('lp_timestamp'),
+      tracker_url:       window.location.href,
+      tracker_timestamp: new Date().toISOString()
+    };
+
+    trackingData.archetype = trackingData.archetype || trackingData.at;
+    trackingData.angle     = trackingData.angle     || trackingData.ag;
+
+    var epsScore  = parseFloat(trackingData.eps_score) || 0;
+    var apsScore  = parseFloat(trackingData.aps_score) || epsScore;
+    var dspStep   = 'step_2';
+
+    // Set title immediately so GTM Preview captures correct page name
+    var earlyBrand = getCookie('brand_name') || 'AmplifAI';
+    document.title = earlyBrand + ' — Step 2';
+
+    var debugMode = getParam('debug', []) === '1' || getParam('test_all', []) === '1';
+    var testMode  = getParam('testsurvey', []) === '1' || getParam('test', []) === '1';
+
+    window.dataLayer = window.dataLayer || [];
+    var brandConfig = {};
+
+    function getApsTierLabel(score) {
+      var tiers   = deepGet(brandConfig, ['tracking', 'aps', 'quality_tiers'], {});
+      var high    = typeof tiers.high     === 'number' ? tiers.high     : 80;
+      var medHigh = typeof tiers.med_high === 'number' ? tiers.med_high : 65;
+      var medium  = typeof tiers.medium   === 'number' ? tiers.medium   : 50;
+      var medLow  = typeof tiers.med_low  === 'number' ? tiers.med_low  : 35;
+      if (score >= high)    return 'high';
+      if (score >= medHigh) return 'med_high';
+      if (score >= medium)  return 'medium';
+      if (score >= medLow)  return 'med_low';
+      return 'low';
+    }
+
+    var progressEl    = document.getElementById('progress-bar-fill');
+    var progressLabel = document.getElementById('progress-label');
+
+    var progressStages = [
+      { pct: 25,  label: 'Confirming your information...',   step: 0, delay: 400  },
+      { pct: 55,  label: 'Personalizing your experience...', step: 1, delay: 900  },
+      { pct: 80,  label: 'Securing your spot...',            step: 2, delay: 1500 },
+      { pct: 100, label: 'Ready! Redirecting you now...',    step: 2, delay: 2200 }
+    ];
+
+    function updateProgress(stage) {
+      if (!progressEl) return;
+      progressEl.style.width = stage.pct + '%';
+      progressEl.parentElement.setAttribute('aria-valuenow', stage.pct);
+      progressLabel.textContent = stage.pct + '% Complete — ' + stage.label;
+      var steps = ['step-tracking', 'step-personalizing', 'step-redirecting'];
+      for (var i = 0; i < steps.length; i++) {
+        var el = document.getElementById(steps[i]);
+        if (!el) continue;
+        if (i < stage.step) {
+          el.classList.remove('active');
+          el.classList.add('done');
+          el.querySelector('.step-dot').textContent = '✓';
+        } else if (i === stage.step) {
+          el.classList.add('active');
+          el.classList.remove('done');
+        }
+      }
+    }
+
+    function selectSplitTestVariant(config) {
+      var splitTest = deepGet(config, ['conversion_tracker', 'splitTest'], {});
+      if (!splitTest.enabled) {
+        return deepGet(config, ['landing_page', 'defaults', 'cta_destination'], 'thank-you.html');
+      }
+      var variants = (splitTest.variants || []).filter(function(v) { return v.enabled; });
+      if (!variants.length) {
+        return deepGet(config, ['landing_page', 'defaults', 'cta_destination'], 'thank-you.html');
+      }
+      var totalWeight = variants.reduce(function(sum, v) { return sum + (v.weight || 0); }, 0);
+      var rand = Math.random() * totalWeight;
+      var cumulative = 0;
+      for (var i = 0; i < variants.length; i++) {
+        cumulative += (variants[i].weight || 0);
+        if (rand <= cumulative) {
+          setCookie('split_variant', variants[i].name, 365);
+          if (debugMode) {
+            var sb = document.getElementById('split-badge');
+            sb.style.display = 'block';
+            sb.textContent = 'Split: ' + variants[i].name + ' (' + variants[i].weight + '%)';
+          }
+          return variants[i].url;
+        }
+      }
+      return variants[0].url;
+    }
+
+    function triggerWebhooks(config) {
+      var thresholds = deepGet(config, ['conversion_tracker', 'webhookThresholds'], {});
+      var webhooks   = deepGet(config, ['conversion_tracker', 'webhooks'], {});
+      var score = apsScore;
+
+      var payload = JSON.stringify(Object.assign({}, trackingData, {
+        aps_current:      apsScore,
+        eps_initial:      epsScore,
+        dsp_step:         dspStep,
+        tracker_timestamp: new Date().toISOString(),
+        split_variant:    getCookie('split_variant')
+      }));
+
+      function sendWebhook(url) {
+        try {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+          }).catch(function() {});
+        } catch(e) {}
+      }
+
+      if (score >= (thresholds.ai_call_min_eps || 70)) {
+        var aiHook    = deepGet(webhooks, ['ai_call', 'url'], '');
+        var aiEnabled = deepGet(webhooks, ['ai_call', 'enabled'], false);
+        if (aiEnabled && aiHook && aiHook.indexOf('YOUR_') === -1) {
+          sendWebhook(aiHook);
+          if (debugMode) console.log('[Tracker] AI Call webhook triggered (APS: ' + score + ')');
+        }
+      }
+
+      if (score >= (thresholds.sms_min_eps || 50)) {
+        var smsHook    = deepGet(webhooks, ['sms', 'url'], '');
+        var smsEnabled = deepGet(webhooks, ['sms', 'enabled'], false);
+        if (smsEnabled && smsHook && smsHook.indexOf('YOUR_') === -1) {
+          sendWebhook(smsHook);
+          if (debugMode) console.log('[Tracker] SMS webhook triggered (APS: ' + score + ')');
+        }
+      }
+
+      if (score >= (thresholds.email_min_eps || 30)) {
+        var emailHook    = deepGet(webhooks, ['email', 'url'], '');
+        var emailEnabled = deepGet(webhooks, ['email', 'enabled'], false);
+        if (emailEnabled && emailHook && emailHook.indexOf('YOUR_') === -1) {
+          sendWebhook(emailHook);
+          if (debugMode) console.log('[Tracker] Email webhook triggered (APS: ' + score + ')');
+        }
+      }
+    }
+
+    function fireConversionEvents() {
+      window.dataLayer.push(Object.assign({}, trackingData, {
+        event:       'conversion_bridge_loaded',
+        funnel_step: 'step_2',
+        dsp_step:    dspStep,
+        aps_current: apsScore,
+        aps_tier:    getApsTierLabel(apsScore),
+        eps_initial: epsScore
+      }));
+      if (debugMode) console.log('[Tracker] conversion_bridge_loaded fired (step_2)');
+
+      window.dataLayer.push({
+        event:            'lead_conversion',
+        funnel_step:      'step_2',
+        dsp_step:         dspStep,
+        conversion:       trackingData.conversion,
+        campaign:         trackingData.campaign,
+        banner:           trackingData.banner,
+        publisher:        trackingData.publisher,
+        archetype:        trackingData.archetype,
+        angle:            trackingData.angle,
+        at:               trackingData.at,
+        ag:               trackingData.ag,
+        ad:               trackingData.ad,
+        phase:            trackingData.phase,
+        eps_score:        epsScore,
+        aps_score:        apsScore,
+        aps_current:      apsScore,
+        aps_tier:         getApsTierLabel(apsScore),
+        eps_initial:      epsScore,
+        email:            trackingData.email,
+        phone:            trackingData.phone,
+        name:             trackingData.name || trackingData.fname,
+        q1: trackingData.q1, q2: trackingData.q2, q3: trackingData.q3,
+        q4: trackingData.q4, q5: trackingData.q5,
+        city: trackingData.city, region: trackingData.region,
+        device_type: trackingData.device_type, country: trackingData.country
+      });
+      if (debugMode) console.log('[Tracker] lead_conversion fired (step_2)');
+
+      var dspEnabled = deepGet(brandConfig, ['conversion_tracker', 'dspPostback', 'enabled'], true);
+      if (dspEnabled) {
+        window.dataLayer.push({
+          event:            'dsp_postback',
+          funnel_step:      'step_2',
+          dsp_step:         dspStep,
+          conversion:       trackingData.conversion,
+          conversion_value: deepGet(brandConfig, ['conversion_values', 'step_2'], 0),
+          campaign:         trackingData.campaign,
+          banner:           trackingData.banner,
+          publisher:        trackingData.publisher,
+          archetype:        trackingData.archetype,
+          angle:            trackingData.angle,
+          ad:               trackingData.ad,
+          aps_current:      apsScore,
+          aps_tier:         getApsTierLabel(apsScore),
+          eps_initial:      epsScore
+        });
+        if (debugMode) console.log('[Tracker] dsp_postback fired (step_2)');
+      }
+
+      window.dataLayer.push({
+        event:       'master_lead_retargeting',
+        funnel_step: 'step_2',
+        conversion:  trackingData.conversion,
+        archetype:   trackingData.archetype,
+        angle:       trackingData.angle,
+        ad:          trackingData.ad,
+        phase:       trackingData.phase,
+        eps_score:   epsScore,
+        aps_current: apsScore,
+        aps_tier:    getApsTierLabel(apsScore),
+        campaign:    trackingData.campaign,
+        banner:      trackingData.banner,
+        publisher:   trackingData.publisher,
+        city:        trackingData.city,
+        device_type: trackingData.device_type
+      });
+      if (debugMode) console.log('[Tracker] master_lead_retargeting fired (step_2)');
+      if (debugMode) console.log('[Tracker] All step_2 GTM events fired');
+    }
+
+    window.addEventListener('message', function(event) {
+      var data = event.data;
+      if (!data) return;
+
+      var isComplete = (data.type  === 'FORMBRICKS_SURVEY_COMPLETED') ||
+                       (data.event === 'formbricks:surveyCompleted')   ||
+                       (data.type  === 'typebot-form-complete')        ||
+                       (data.event === 'typebot:complete')             ||
+                       (data.action === 'survey_completed');
+
+      if (isComplete) {
+        if (data.answers) {
+          data.answers.forEach(function(ans, i) {
+            if (i < 10) {
+              var val = ans.value || ans.text || ans;
+              setCookie('q' + (i+1), val, 365);
+              trackingData['q' + (i+1)] = val;
+            }
+          });
+        }
+        if (data.email) { trackingData.email = data.email; setCookie('email', data.email, 365); }
+        if (data.phone) { trackingData.phone = data.phone; setCookie('phone', data.phone, 365); }
+        if (data.name)  { trackingData.name  = data.name;  setCookie('name',  data.name,  365); }
+
+        // Calculate APS bonuses from survey data before redirect
+        var apsBonus = 0;
+        var apsCfg   = deepGet(brandConfig, ['tracking', 'aps'], {});
+        if (data.email || trackingData.email) {
+          apsBonus += deepGet(apsCfg, ['email_entry', 'bonus'], 15);
+        }
+        if (data.phone || trackingData.phone) {
+          apsBonus += deepGet(apsCfg, ['phone_entry', 'bonus'], 25);
+        }
+        var answerCount = data.answers ? Math.min(data.answers.length, 10) : 0;
+        if (answerCount > 0) {
+          var perAnswer  = deepGet(apsCfg, ['answer_survey', 'bonus_per_answer'], 5);
+          var maxSurvey  = deepGet(apsCfg, ['answer_survey', 'max_bonus'], 25);
+          apsBonus += Math.min(answerCount * perAnswer, maxSurvey);
+        }
+        if (apsBonus > 0) {
+          apsScore = Math.min(apsScore + apsBonus, 100);
+          setCookie('aps_score', apsScore, 365);
+          if (debugMode) console.log('[Tracker] APS bonus from survey: +' + apsBonus + ' → APS=' + apsScore);
+        }
+
+        if (debugMode) console.log('[Tracker] Survey completed, starting redirect flow');
+        startRedirectFlow(null);
+      }
+    });
+
+    /* ===========================================================
+       10. REDIRECT FLOW
+    =========================================================== */
+    function buildRedirectUrl(baseUrl) {
+      var params = [];
+      var keyParams = ['conversion', 'campaign', 'banner', 'publisher',
+        'archetype', 'angle', 'at', 'ag', 'ad', 'phase', 'av', 'mb'];
+      keyParams.forEach(function(k) {
+        if (trackingData[k]) params.push(encodeURIComponent(k) + '=' + encodeURIComponent(trackingData[k]));
+      });
+      params.push('aps_score=' + apsScore);
+      params.push('eps_score=' + epsScore);
+      if (trackingData.email) params.push('email=' + encodeURIComponent(trackingData.email));
+      if (trackingData.fname) params.push('fname=' + encodeURIComponent(trackingData.fname));
+      if (debugMode) params.push('debug=1');
+      var gtmDbg = urlParams['gtm_debug'];
+      if (gtmDbg) params.push('gtm_debug=' + encodeURIComponent(gtmDbg));
+      var qs = params.join('&');
+      if (!baseUrl || baseUrl === '#' || baseUrl === 'thank-you.html' || baseUrl.indexOf('conversion-tracker') !== -1) {
+        return 'thank-you.html?' + qs;
+      }
+      // External URL (Cal.com, TypeBot, etc) — redirect directly with tracking params
+      var sep = baseUrl.indexOf('?') !== -1 ? '&' : '?';
+      return baseUrl + sep + qs;
+    }
+
+    function startRedirectFlow(destinationUrl) {
+      var redirectDelay = deepGet(brandConfig, ['conversion_tracker', 'redirect_delay'], 3000);
+      var redirectTarget = destinationUrl
+        ? buildRedirectUrl(destinationUrl)
+        : buildRedirectUrl('thank-you.html');
+
+      progressStages.forEach(function(stage) {
+        setTimeout(function() { updateProgress(stage); }, stage.delay);
+      });
+
+      fireConversionEvents();
+
+      var continueBtn = document.getElementById('ct-continue-btn');
+      if (continueBtn) {
+        continueBtn.href = redirectTarget;
+      }
+
+      var totalDelay = Math.max(redirectDelay, 2600);
+      setTimeout(function() {
+        if (debugMode) console.log('[Tracker] Redirecting to: ' + redirectTarget);
+        window.location.href = redirectTarget;
+        setTimeout(function() {
+          if (continueBtn) continueBtn.style.display = 'inline-block';
+        }, 800);
+      }, totalDelay);
+    }
+
+    function init() {
+      fetch('./brand-config.json?v=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(config) { brandConfig = config; onConfigLoaded(config); })
+        .catch(function() { brandConfig = {}; onConfigLoaded({}); });
+    }
+
+    function onConfigLoaded(config) {
+
+      var gtmId = deepGet(config, ['brand', 'gtmId'], '');
+      if (gtmId && gtmId !== 'GTM-XXXXXXX') {
+        (function(w,d,s,l,i){
+          w[l]=w[l]||[];
+          w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+          var f=d.getElementsByTagName(s)[0];
+          var j=d.createElement(s);
+          j.async=true;
+          j.src='https://www.googletagmanager.com/gtm.js?id='+i;
+          f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',gtmId);
+      }
+
+      var akAccountId = deepGet(config, ['tracking', 'adkernel', 'account_id'], '');
+      if (akAccountId) {
+        var akPixel = document.createElement('img');
+        akPixel.src = 'https://rtb2-useast.amplifai.it.com/universalPixel?account=' + encodeURIComponent(akAccountId);
+        akPixel.setAttribute('style', 'width:1px;height:1px;display:none;');
+        akPixel.setAttribute('referrerpolicy', 'unsafe-url');
+        akPixel.alt = '';
+        document.body.appendChild(akPixel);
+      }
+
+      var fontUrl    = deepGet(config, ['branding', 'font', 'url'], '');
+      var fontFamily = deepGet(config, ['branding', 'font', 'family'], 'Inter');
+      if (fontUrl) document.getElementById('brand-font-link').href = fontUrl;
+      document.documentElement.style.setProperty('--brand-font', "'" + fontFamily + "', system-ui, sans-serif");
+      document.body.style.fontFamily = "'" + fontFamily + "', system-ui, sans-serif";
+      document.title = deepGet(config, ['brand', 'name'], 'AmplifAI') + ' — Step 2';
+
+      var btnColor = deepGet(config, ['landing_page', 'styling', 'button_color'], '#2563eb');
+      document.documentElement.style.setProperty('--btn-color', btnColor);
+
+      // ── BACKGROUND IMAGE ────────────────────────────────────
+      var isMobile = window.innerWidth <= 768;
+      var bgImg    = deepGet(config, ['landing_page', 'defaults', 'background_image'], '');
+      var bgImgMob = deepGet(config, ['landing_page', 'defaults', 'background_image_mobile'], '');
+      var heroSrc  = '';
+      if (isMobile && bgImgMob) { heroSrc = 'public/' + bgImgMob; }
+      else if (bgImg) { heroSrc = 'public/' + bgImg; }
+      if (heroSrc) {
+        var hbg = document.getElementById('hero-bg');
+        if (hbg) hbg.style.backgroundImage = "url('" + heroSrc + "')";
+      }
+      var oMap = { light: 0.30, medium: 0.50, dark: 0.65, xdark: 0.80 };
+      var oVal = deepGet(config, ['landing_page', 'defaults', 'overlay'], 'dark');
+      document.documentElement.style.setProperty('--overlay-opacity', oMap[oVal] || 0.65);
+
+      var logoFile = deepGet(config, ['branding', 'logo', 'filename'], '');
+      if (logoFile) {
+        document.getElementById('tracker-logo-img').src = 'public/' + logoFile;
+        document.getElementById('tracker-logo-img').alt = deepGet(config, ['branding', 'logo', 'alt'], 'Brand Logo');
+        document.getElementById('tracker-logo').style.display = 'block';
+      }
+
+      buildFooter(config);
+
+      var surveyType   = deepGet(config, ['conversion_tracker', 'survey', 'type'], '');
+      var formbricksId = deepGet(config, ['conversion_tracker', 'survey', 'formbricks_id'], '');
+      var typebotId    = deepGet(config, ['conversion_tracker', 'survey', 'typebot_id'], '');
+      var hasSurvey    = false;
+
+      if (surveyType === 'formbricks' && formbricksId && formbricksId !== 'YOUR_FORMBRICKS_ID') {
+        document.getElementById('survey-iframe').src =
+          'https://app.formbricks.com/s/' + formbricksId
+          + '?email=' + encodeURIComponent(trackingData.email)
+          + '&name='  + encodeURIComponent(trackingData.fname || trackingData.name);
+        document.getElementById('survey-container').classList.add('active');
+        hasSurvey = true;
+      } else if (surveyType === 'typebot' && typebotId && typebotId !== 'YOUR_TYPEBOT_ID') {
+        document.getElementById('survey-iframe').src = 'https://typebot.io/' + typebotId;
+        document.getElementById('survey-container').classList.add('active');
+        hasSurvey = true;
+      }
+
+      var destinationUrl = selectSplitTestVariant(config);
+
+      if (debugMode) {
+        document.getElementById('debug-panel').classList.add('active');
+        var lines = [
+          'Conversion Tracker v2.3',
+          'Mode: ' + (testMode ? 'TEST' : 'LIVE'),
+          '─────────────────',
+          'Conversion: ' + (trackingData.conversion || '(none)'),
+          'EPS: ' + epsScore,
+          'APS: ' + apsScore,
+          'APS Tier: ' + getApsTierLabel(apsScore),
+          'Archetype: ' + (trackingData.archetype || '(none)'),
+          'Angle: ' + (trackingData.angle || '(none)'),
+          'Ad: ' + (trackingData.ad || '(none)'),
+          '─────────────────',
+          'Survey: ' + (hasSurvey ? surveyType : 'none'),
+          'Split: ' + (getCookie('split_variant') || 'n/a'),
+          'Destination: ' + destinationUrl,
+          'DSP Postback: ' + (deepGet(config, ['conversion_tracker', 'dspPostback', 'enabled'], true) ? 'ON' : 'OFF'),
+          '─────────────────',
+          'Email: ' + (trackingData.email || '(none)'),
+          'Name: '  + (trackingData.fname || trackingData.name || '(none)')
+        ];
+        document.getElementById('debug-content').innerHTML = lines.join('<br>');
+        console.log('[Tracker] Config loaded:', config);
+        console.log('[Tracker] Tracking data:', trackingData);
+      }
+
+      triggerWebhooks(config);
+
+      if (!hasSurvey) {
+        startRedirectFlow(destinationUrl);
+      } else {
+        window.dataLayer.push(Object.assign({}, trackingData, {
+          event:       'conversion_bridge_loaded',
+          funnel_step: 'step_2',
+          dsp_step:    dspStep,
+          aps_current: apsScore,
+          aps_tier:    getApsTierLabel(apsScore),
+          eps_initial: epsScore
+        }));
+        updateProgress({ pct: 30, label: 'Complete the survey to continue', step: 1 });
+        if (debugMode) console.log('[Tracker] Survey mode active, waiting for completion');
+      }
+    }
+
+    function buildFooter(config) {
+      var footerEnabled = deepGet(config, ['footer', 'enabled'], true);
+      if (!footerEnabled) { document.getElementById('page-footer').style.display = 'none'; return; }
+
+      var showLogo = deepGet(config, ['footer', 'logo', 'show'], true);
+      var logoFile = deepGet(config, ['branding', 'logo', 'filename'], '');
+      if (showLogo && logoFile) {
+        document.getElementById('footer-logo-img').src = 'public/' + logoFile;
+        document.getElementById('footer-logo-img').alt = deepGet(config, ['branding', 'logo', 'alt'], 'Logo');
+        document.getElementById('footer-logo-link').href = deepGet(config, ['branding', 'logo', 'link'], '#');
+        document.getElementById('footer-logo-wrap').style.display = 'block';
+      }
+
+      var socialDefs = {
+        facebook:  '<svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+        instagram: '<svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>',
+        twitter:   '<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.635 5.905-5.635zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+        linkedin:  '<svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+        youtube:   '<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>',
+        tiktok:    '<svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>'
+      };
+
+      var socialContainer = document.getElementById('footer-social');
+      var hasSocial = false;
+      ['facebook','instagram','twitter','linkedin','youtube','tiktok'].forEach(function(p) {
+        var enabled = deepGet(config, ['footer', 'social_links', p, 'enabled'], false);
+        var url     = deepGet(config, ['footer', 'social_links', p, 'url'], '#');
+        if (enabled && url && url !== '#') {
+          hasSocial = true;
+          var a = document.createElement('a');
+          a.href = url; a.className = 'social-icon';
+          a.target = '_blank'; a.rel = 'noopener noreferrer';
+          a.setAttribute('aria-label', p.charAt(0).toUpperCase() + p.slice(1));
+          a.innerHTML = socialDefs[p];
+          socialContainer.appendChild(a);
+        }
+      });
+      if (hasSocial) socialContainer.style.display = 'flex';
+
+      var fl = document.getElementById('footer-links');
+      var defaults = { privacy: { text: 'Privacy Policy', url: '/privacy' }, terms: { text: 'Terms of Service', url: '/terms' }, cookies: { text: 'Cookie Policy', url: '/cookies' }, contact: { text: 'Contact', url: '/contact' } };
+      var activeLinks = ['privacy','terms','cookies','contact'].filter(function(k) {
+        return deepGet(config, ['footer', 'links', k, 'enabled'], true);
+      });
+      activeLinks.forEach(function(key, idx) {
+        var a = document.createElement('a');
+        a.href = deepGet(config, ['footer', 'links', key, 'url'], defaults[key].url);
+        a.textContent = deepGet(config, ['footer', 'links', key, 'text'], defaults[key].text);
+        fl.appendChild(a);
+        if (idx < activeLinks.length - 1) {
+          var sep = document.createElement('span');
+          sep.className = 'sep'; sep.textContent = '·';
+          fl.appendChild(sep);
+        }
+      });
+
+      document.getElementById('footer-copyright').textContent =
+        deepGet(config, ['brand', 'copyright'], '© ' + new Date().getFullYear() + ' Your Brand. All rights reserved.');
+    }
+
+    init();
+
+  })();
+  </script>
+
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+      height="0" width="0" style="display:none;visibility:hidden" title="GTM"></iframe>
+  </noscript>
+
+</body>
+</html>
