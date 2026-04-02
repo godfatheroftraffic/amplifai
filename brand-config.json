@@ -86,7 +86,7 @@
       "_cta_text_help": "⚡ REQUIRED — CTA button label. Action-oriented, 3-6 words ideal. Overridden by ?cta= URL param.",
       "cta_destination": "https://echo-lp-dev.pages.dev/conversion-tracker.html",
       "_cta_destination_help": "⚡ REQUIRED — Where the CTA button sends the user. TypeBot URL, Calendly link, product page, etc.",
-      "_cta_destination_example": "Examples: https://typebot.co/your-bot-name  |  https://cal.com/yourname/meeting  |  https://yourproduct.com",
+      "_cta_destination_example": "https://typebot.co/ceos-echo-funnel-v-1-uyrq8g7,
       "_cta_destination_routing": "Routing priority: 1) ?link= URL param always wins  2) debug=1 → conversion-tracker.html (internal tracking test)  3) This field  4) Falls back to conversion-tracker.html with console warning",
       "background_image": "16_ybn.jpg",
       "_background_image_help": "⚡ REQUIRED — Desktop hero background image filename in /public/ folder. Overridden by ?img= URL param.",
